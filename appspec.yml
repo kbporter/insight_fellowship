@@ -23,8 +23,8 @@ os: linux
 #   "files" section altogether. A blank or incomplete "files" section
 #   may cause associated deployments to fail.
 files:
-  - source: /insight_fellowship
-    destination: /home/ubuntu/insight_fellowship
+  - source: /
+    destination: /home/ubuntu/from_github
   # - source:
   #   destination:
 # For deployments to Amazon Linux, Ubuntu Server, or RHEL instances,
@@ -38,7 +38,7 @@ files:
 #   "permissions" section altogether. A blank or incomplete "permissions"
 #   section may cause associated deployments to fail.
 permissions:
-  - object: /insight_fellowship
+  - object: /.
     pattern: "**"
     # except:
     owner: ubuntu
