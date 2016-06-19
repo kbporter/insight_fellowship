@@ -31,3 +31,15 @@ def maketime_sec(x):
     new1 = time.strptime(x,"%Y-%m-%d %H:%M:%S")
     new2 = time.mktime(new1)
     return new2
+
+
+def first_5_sessions(cur, patient):
+	""" for a single patient, get duration, accuracy, latency, task level """
+	""" and completed task ratio for the 5 most recent sessions """
+	cur.execute(("select patient_id, duration, accuracy, latency, task_level, (completed_task_count/total_task_count) as completed_ratio  from sessions where patient_id = ({patient_num}) order by start_time asc limit 5;").format(patient_num=patient))
+	sleep(.5)
+	result = cur.fetchall()
+	# r = [i[0] for i in result]
+	r = pd.DataFrame(result,columns=['patient_id', 'duration', 'accuracy', 'latency','task_level', 'completed_ratio'])
+	return r
+
