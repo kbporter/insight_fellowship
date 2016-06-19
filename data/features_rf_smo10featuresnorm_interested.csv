@@ -1,0 +1,11 @@
+,0
+0,mean_accuracy
+1,mean_reaction_time
+2,sum_skipped_trials
+3,first_trial_accuracy
+4,first_trial_reaction_time
+5,task_level1_x_avg_accuracy
+6,task_level2_x_avg_accuracy
+7,task_type24_x_avg_accuracy
+8,task_type37_x_avg_accuracy
+9,client_platform
