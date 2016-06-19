@@ -14,7 +14,7 @@ from io import BytesIO
 
 import sys
 # sys.path.append('//Users/katieporter/Dropbox/Insight/CT/ct_share/insight_fellowship/constant_therapy_app')
-sys.path.append('/home/ubuntu/insight_fellowship')
+sys.path.append('/home/ubuntu/from_github/constant_therapy_app')
 
 from test import *
 
