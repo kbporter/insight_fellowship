@@ -92,7 +92,7 @@ def ModelIt():
 	# with open('/Users/katieporter/Dropbox/Insight/CT/ct_private/rf_smo10featuresnorm_interested.b', 'rb') as f:
 	with open('./data/rf_smo10featuresnorm_interested.b', 'rb') as f:
     # load using pickle de-serializer
-		deployed_model= pickle.loads(f)
+		deployed_model= pickle.load(f)
 	
 	# import complete dataset 
 	final_features_raw_wid, final_features_raw, active_all = fns.import_features()
