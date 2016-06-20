@@ -30,6 +30,10 @@ import numpy as np
 # con = psycopg2.connect(database = dbname, user = user)
 
 @app.route('/')
+@app.route('/input')
+def ct_input():
+    return render_template("input.html")
+
 @app.route('/index')
 def index():
     return render_template("index.html",
@@ -113,10 +117,6 @@ def figure9():
 def figure10():
     img = make_fig(9)
     return send_file(img, mimetype='image/png')
-
-@app.route('/input')
-def ct_input():
-    return render_template("input.html")
 
 @app.route('/features_output')
 def features_output():
