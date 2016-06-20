@@ -13,21 +13,21 @@ from matplotlib.figure import Figure
 from io import BytesIO
 
 import sys
-# sys.path.append('//Users/katieporter/Dropbox/Insight/CT/ct_share/insight_fellowship/constant_therapy_app')
-sys.path.append('/home/ubuntu/from_github/constant_therapy_app')
+sys.path.append('/Users/katieporter/Dropbox/Insight/CT/ct_share/insight_fellowship/constant_therapy_app')
+# sys.path.append('/home/ubuntu/from_github/constant_therapy_app')
 
-from test import *
+# from test import *
 
 from katie_user_model import *
 # os.chdir('/Users/katieporter/Dropbox/Insight/CT/ct_share/insight_fellowship')
 import numpy as np
 
-user = 'katie' #add your username here (same as previous postgreSQL)            
-host = 'localhost'
-dbname = 'birth_db'
-db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
-con = None
-con = psycopg2.connect(database = dbname, user = user)
+# user = 'katie' #add your username here (same as previous postgreSQL)            
+# host = 'localhost'
+# dbname = 'birth_db'
+# db = create_engine('postgres://%s%s/%s'%(user,host,dbname))
+# con = None
+# con = psycopg2.connect(database = dbname, user = user)
 
 @app.route('/')
 @app.route('/index')
