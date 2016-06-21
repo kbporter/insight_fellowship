@@ -13,8 +13,8 @@ from matplotlib.figure import Figure
 from io import BytesIO
 
 import sys
-sys.path.append('/Users/katieporter/Dropbox/Insight/CT/ct_share/insight_fellowship/constant_therapy_app')
-# sys.path.append('/home/ubuntu/from_github/constant_therapy_app')
+# sys.path.append('/Users/katieporter/Dropbox/Insight/CT/ct_share/insight_fellowship/constant_therapy_app')
+sys.path.append('/home/ubuntu/from_github/constant_therapy_app')
 
 # from test import *
 
@@ -134,6 +134,7 @@ def features_output():
 
     return render_template("features_output.html", table=table_out, validation=validation, numfeatures=numfeatures) #training=training,
 
+
 @app.route('/patient_output')
 def patient_output():
     #pull 'patient_id' from input field and store it
@@ -141,6 +142,11 @@ def patient_output():
     # patient = int(patient)
     prediction, activity, assessment, patient, active_status, avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc  = ModelOne(patient) # avg_rt, avg_ratio, first_acc, platform,
     return render_template("patient_output.html", prediction=prediction, activity=activity, assessment=assessment, patient=patient, active_status=active_status, avg_rt = avg_rt, first_trial_rt = first_trial_rt, avg_acc = avg_acc, level1acc=level1acc, first_acc=first_acc, platform=platform, type37acc=type37acc, sumskipped=sumskipped, level2acc=level2acc, type24acc=type24acc) #avg_rt=avg_rt, avg_ratio=avg_ratio, first_acc=first_acc, platform=platform, , script=script, div=div
+
+@app.route('/slides')
+def slides():
+    return render_template("slides.html")
+
 
 # @app.route('/high_risk_output')
 # def high_risk_output():
