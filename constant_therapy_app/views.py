@@ -147,6 +147,14 @@ def patient_output():
 def slides():
     return render_template("slides.html")
 
+@app.route('/aboutme')
+def aboutme():
+    return render_template("aboutme.html")
+
+@app.route('/contact')
+def contact():
+    return render_template("contact.html")
+
 
 # @app.route('/high_risk_output')
 # def high_risk_output():
