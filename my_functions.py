@@ -34,10 +34,10 @@ def isactive_subscribed(x):
 
 def import_features():
 	# final_features_raw_wid = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/final_all_features_wid.csv')
-	final_features_raw_wid = pd.read_csv('../data/final_all_features_wid.csv')
+	final_features_raw_wid = pd.read_csv('./data/final_all_features_wid.csv')
 	final_features_raw = final_features_raw_wid.drop('patient_id', axis=1)
-	active_nonan = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/active_nonan.csv')
-	active_nonan = pd.read_csv('../data/active_nonan.csv')
+	# active_nonan = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/active_nonan.csv')
+	active_nonan = pd.read_csv('./data/active_nonan.csv')
 
 	final_features_raw = final_features_raw.drop('Unnamed: 0', axis=1)
 	final_features_raw_wid = final_features_raw_wid.drop('Unnamed: 0', axis=1)
@@ -48,16 +48,16 @@ def import_features():
 	return final_features_raw_wid, final_features_raw, active_all
 
 def load_train_test_data(): 
-	test_data = pd.read_csv('../data/test_data_final.csv')
+	test_data = pd.read_csv('./data/test_data_final.csv')
 	test_data = test_data.drop('Unnamed: 0', axis=1)
 
-	test_labels = pd.read_csv('../data/test_labels_final.csv')
+	test_labels = pd.read_csv('./data/test_labels_final.csv')
 	test_labels = test_labels.drop('Unnamed: 0', axis=1)
 
-	trainval_data= pd.read_csv('../data/trainval_data_final.csv')
+	trainval_data= pd.read_csv('./data/trainval_data_final.csv')
 	trainval_data = trainval_data.drop('Unnamed: 0', axis=1)
 
-	trainval_labels = pd.read_csv('../data/trainval_labels_final.csv')
+	trainval_labels = pd.read_csv('./data/trainval_labels_final.csv')
 	trainval_labels = trainval_labels.drop('Unnamed: 0', axis=1)
 
 	return test_data, test_labels, trainval_data, trainval_labels
