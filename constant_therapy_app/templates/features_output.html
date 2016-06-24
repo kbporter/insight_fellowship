@@ -30,6 +30,7 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+
   </head>
 
   <body>
@@ -60,8 +61,15 @@
 
     <div class="container">
 
+     <div class="starter-template">
+      <h2> ChurnNoMore:  </h2>
+
+
+     </div>   
+
+
       <div class="starter-template">
-        <h2>Your Results</h2>
+ <!--        <h2>Your Results</h2> -->
         <!-- <p>Enter some user input</p> -->
     </div>
 
@@ -100,12 +108,11 @@
       <br>
 
       <table class="table table-hover">
-      <tr><th>Feature</th><th>Importance</th><th>Difference (Mean Active) - (Mean Inactive) 2+ Days</th></tr>
+      <tr><th>Feature</th><th>Importance (%) </th><th align="center">Difference (Mean Active) - (Mean Inactive) 2+ Days</th></tr>
       {% for row in table %}
-      <tr><td>{{row['feature']}}</td><td> {{row['importance']}}</td><td> {{row['diff2days']}}</td></tr>
+      <tr><td> {{row['feature']}}</td> <td> <div class="progress"> <div class="progress-bar" role="progressbar" aria-valuenow={{row['importance']}} aria-valuemin="0" aria-valuemax="1" style="width:{{row['importance']}}%" > <span> {{row['importance']}} </span> </div> </div> </td> <td align="center"> {{row['diff2days']}}</td></tr>
       {% endfor %}
       </table>
-
 
       </div><!-- /.container -->
       <!-- <div class="container">
@@ -149,10 +156,10 @@
       <br> <br>
       <div class="starter-template">
         <h3>Recommendations:</h3>
-        <p class="lead"> Given that the time taken to respond and the accuracy of the responses are the most influential features in the model, <b> Constant Therapy may want to adjust the difficulty of their starting tasks. </b> We can see that Active users have a greater proportion of accurate responses, suggesting that the <b> tasks assigned to new users are too difficult, potentially causing frustration with the app. Furthermore, <b> prompting users to slow down after an inaccurate response</b> may facilitate their experience. </b> </p>
+        <p class="lead"> Since that the time taken to respond and the accuracy of the responses are the most influential features in the model, <b> Constant Therapy may want to adjust the difficulty of their starting tasks. </b> Drop-off users perform worse on average than active users, suggesting that the <b> tasks assigned to new users are too difficult, potentially causing frustration with the app.</b> Furthermore, <b> prompting users to slow down after an inaccurate response</b> may facilitate their experience. </b> </p>
 
-        <p class="lead"> The level of difficulty and task type also seem to affect the two groups differently. Active users perform better on Task 37, whereas Inactive users perform better on Task 24. <b> Decreasing the starting difficulty of Task 37, and increasing the starting difficulty of Task 24 is recommended.</b> </p>
-        <p class = "lead"> The first two levels of difficulty also seem to not be optimized. More Active users have higher accuracy on the first level of difficulty, and more Inactive users have higher accuracy on the second level of difficulty.
+        <p class="lead"> The level of difficulty and task type also seem to affect the two groups differently. Drop-off users perform worse than active users on Task B, but better on task A. <b> Decreasing the starting difficulty of Task B, and increasing the starting difficulty of Task A is recommended.</b> </p>
+        <p class = "lead"> The first two levels of difficulty also seem to not be optimized. Fewer drop-off users perform well on the least difficult tasks, but those assigned the second level of difficulty perform better than the active users on average. 
       </div>
 <!--       <table class="table table-hover">
     <tr>
@@ -161,7 +168,7 @@
         </tr>
       </table> -->
       <!-- <br> <br> -->
-      <p class = "lead">Additionally, it seems as though a greater proportion of inactive users download the app on an android device, whereas a greater proportion of users actively using the app utilize an iOS device. <b> Updating the android platform may help with user retention. </b> Inactive users seem to be completing a similar amount or more tasks assigned than active users, suggesting that <b> they are interacting with the app initially, but are ultimately unsatisfied.</b> </p>
+      <p class = "lead">Additionally, it seems as though the platform may influence drop-off <b> matching the features across the two platforms </b>  may increase user retention on the less supported platform </p>
       <!-- <table class="table table-hover">
           <tr><td><a> <img src="../static/image/platform_active_inactive.png" class="img-rounded" alt="Platform" width=100% height=auto </a></td><td><a> <img src="../static/image/task_ratio_activeinactive.png" class="img-rounded" alt="Task Ratio" width=100% height=auto </a></td></tr>
       </table>

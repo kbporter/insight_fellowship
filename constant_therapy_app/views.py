@@ -40,32 +40,6 @@ def index():
        title = 'Home', user = { 'nickname': 'Katie' },
        )
 
-# @app.route('/db')
-# def birth_page():
-#     sql_query = """                                                             
-#                 SELECT * FROM birth_data_table WHERE delivery_method='Cesarean'\
-# ;                                                                               
-#                 """
-#     query_results = pd.read_sql_query(sql_query,con)
-#     births = ""
-#     print query_results[:10]
-#     for i in range(0,10):
-#         births += query_results.iloc[i]['birth_month']
-#         births += "<br>"
-#     return births
-
-# @app.route('/db_fancy')
-# def cesareans_page_fancy():
-#     sql_query = """
-#                SELECT index, attendant, birth_month FROM birth_data_table WHERE delivery_method='Cesarean';
-#                 """
-#     query_results=pd.read_sql_query(sql_query,con)
-#     births = []
-#     for i in range(0,query_results.shape[0]):
-#         births.append(dict(index=query_results.iloc[i]['index'], attendant=query_results.iloc[i]['attendant'], birth_month=query_results.iloc[i]['birth_month']))
-#     return render_template('cesareans.html',births=births)
-
-
 @app.route('/figure1')
 def figure1():
     numfeatures = request.args.get('numfeatures')
@@ -134,6 +108,21 @@ def features_output():
 
     return render_template("features_output.html", table=table_out, validation=validation, numfeatures=numfeatures) #training=training,
 
+@app.route('/features_output_subscribed')
+def features_output_subscribed():
+    #pull 'birth_month' from input field and store it
+    numfeatures = request.args.get('numfeatures')
+    try: 
+        numfeatures = int(numfeatures)
+    except ValueError:
+        numfeatures = 5
+    validation, table = ModelItSubscribed() # training,
+    table_out = []
+    # for i in range(0, table.shape[0]):
+    for i in range(numfeatures):
+        table_out.append(dict(feature=table.iloc[i]['feature'], importance=table.iloc[i]['importance'], diffactInact=table.iloc[i]['diffactInact']))
+
+    return render_template("features_output_subscribed.html", table=table_out, validation=validation, numfeatures=numfeatures) #training=training,
 
 @app.route('/patient_output')
 def patient_output():

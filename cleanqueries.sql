@@ -45,7 +45,7 @@ WHERE
 GROUP BY patient_id;
 
 -- make table so can access first/last accuracy more easily --
-create temporary table first_last_activity SELECT 
+create temporary table first_last_activity2 SELECT 
     patient_id, MIN(start_time) as min_start, MAX(start_time) as max_start
 FROM
     sessions
@@ -58,12 +58,40 @@ GROUP BY patient_id;
 
 -- get accuracy for first / last session completed --        
 SELECT 
-    patient_id, accuracy, start_time
+    sessions.patient_id, sessions.accuracy, sessions.start_time
 FROM
-    first_last_activity
-LEFT JOIN sessions
-ON first_last_activity.MIN(start_time) = sessions.start_time; -- ASC for first task DESC for last task --
+    first_last_activity2
+        LEFT JOIN
+    sessions ON first_last_activity2.min_start = sessions.start_time
+WHERE
+    accuracy IS NOT NULL
+LIMIT 10; -- ASC for first task DESC for last task --
 
 
 select patient_id, accuracy, start_time from sessions where patient_id = 48514 order by start_time asc;
 
+-- get the lead source for patients who only have scheduled sessions-- 
+SELECT id, lead_source FROM ct_customer.customers WHERE id IN (SELECT * FROM tmp_patientid);
+
+-- get the number of sessions completed (looking for > 1 vs. 1 to define active/inactive) -- 
+SELECT patient_id, COUNT(distinct id) as num_sessions FROM constant_therapy.sessions WHERE patient_id IN (SELECT * FROM tmp_patientid) group by patient_id;
+
+
+
+CREATE TEMPORARY TABLE tmp (
+SELECT 
+    patient_id, COUNT(*) AS num_sess
+FROM
+    sessions
+WHERE
+    type = 'SCHEDULED'
+        AND task_type_id IS NOT NULL
+        AND completed_task_count > 0
+        and patient_id in (select * from tmp_patientid)
+GROUP BY patient_id);
+
+
+create temporary table tmp2 SELECT patient_id, COUNT(distinct id) as num_sessions FROM constant_therapy.sessions WHERE patient_id IN (SELECT * FROM tmp_patientid) group by patient_id;
+
+
+select count(*) from tmp; 

@@ -35,29 +35,44 @@ def isactive_subscribed(x):
 def import_features():
 	# final_features_raw_wid = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/final_all_features_wid.csv')
 	final_features_raw_wid = pd.read_csv('./data/final_all_features_wid.csv')
-	final_features_raw = final_features_raw_wid.drop('patient_id', axis=1)
-	# active_nonan = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/active_nonan.csv')
-	active_nonan = pd.read_csv('./data/active_nonan.csv')
+	# final_features_raw_wid = pd.read_csv('./data/anon_features_wid.csv')
+	# final_features_raw = final_features_raw_wid.drop('anon_id', axis=1)
+	active_nonan = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/active_nonan.csv')
+	# active_nonan = pd.read_csv('./data/active_anon.csv')
 
 	final_features_raw = final_features_raw.drop('Unnamed: 0', axis=1)
 	final_features_raw_wid = final_features_raw_wid.drop('Unnamed: 0', axis=1)
-	active_all = pd.DataFrame({'patient_id': active_nonan['patient_id'], 
+	active_all = pd.DataFrame({'patient_id': active_nonan['anon_id'], 
                           'isactive_interested': active_nonan['isactive_interested'],
                           'isactive_engaged': active_nonan['isactive_engaged'], 
                           'isactive_subscribed': active_nonan['isactive_subscribed']})
 	return final_features_raw_wid, final_features_raw, active_all
 
+def import_features_subscribed():		
+	final_features_raw_wid = pd.read_csv('./data/features86_smo200_10.csv')
+	active_nonan = pd.read_csv('./data/active_anon.csv')
+
+	final_features_raw_wid = final_features_raw_wid.drop('Unnamed: 0', axis=1)
+	active_all = pd.DataFrame({'patient_id': active_nonan['anon_id'], 
+                          'isactive_interested': active_nonan['isactive_interested'],
+                          'isactive_engaged': active_nonan['isactive_engaged'], 
+                          'isactive_subscribed': active_nonan['isactive_subscribed']})
+	final_features_noid = final_features_raw_wid.drop('anon_id', axis=1)
+	feature_names = list(final_features_noid.columns.values)
+
+	return final_features_raw_wid, active_all, feature_names
+
 def load_train_test_data(): 
-	test_data = pd.read_csv('./data/test_data_final.csv')
+	test_data = pd.read_csv('./data/anontest_data_final.csv')
 	test_data = test_data.drop('Unnamed: 0', axis=1)
 
-	test_labels = pd.read_csv('./data/test_labels_final.csv')
+	test_labels = pd.read_csv('./data/anontest_labels_final.csv')
 	test_labels = test_labels.drop('Unnamed: 0', axis=1)
 
-	trainval_data= pd.read_csv('./data/trainval_data_final.csv')
+	trainval_data= pd.read_csv('./data/anontrainval_data_final.csv')
 	trainval_data = trainval_data.drop('Unnamed: 0', axis=1)
 
-	trainval_labels = pd.read_csv('./data/trainval_labels_final.csv')
+	trainval_labels = pd.read_csv('./data/anontrainval_labels_final.csv')
 	trainval_labels = trainval_labels.drop('Unnamed: 0', axis=1)
 
 	return test_data, test_labels, trainval_data, trainval_labels
@@ -66,7 +81,7 @@ def load_train_test_data():
 def plot_active_features(selected_feature_names, index):
 	# split the data into active/inactive 
 	final_features_raw_wid, final_features_raw, active_all = import_features()
-	temp = final_features_raw_wid.merge(active_all, on='patient_id')
+	temp = final_features_raw_wid.merge(active_all, on='anon_id')
 	active_interested_group = pd.groupby(temp, by='isactive_interested')
 	active_interested = active_interested_group.get_group(1)
 	inactive_interested = active_interested_group.get_group(0)

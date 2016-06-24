@@ -17,15 +17,17 @@ from io import BytesIO
 import seaborn as sns
 sns.set_context('poster', font_scale=2)
 
+
 def make_fig(ind):
+
 	selected_feature_names = pd.read_csv('./data/features_rf_smo10featuresnorm_interested.csv')
 	selected_feature_names = list(selected_feature_names['0'])
 	count_norm1i, count_norm0i, count_norm1e, count_norm0e, count_norm1s, count_norm0s, bins1i, bins0i, bins1e, bins0e, bins1s, bins0s = fns.plot_active_features(selected_feature_names, ind)
 	sns.set_context('poster', font_scale=1.3)
 	figdict = dict([("w_pad", 3), ("hpad", 1)])
-	fig = plt.figure(figsize=(20, 8)) # , subplotpars=figdict 
+	fig = plt.figure(figsize=(20, 8))   # , subplotpars=figdict
 	ax = [0, 1, 2]
-	gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1, 1]) 
+	gs = gridspec.GridSpec(1, 3, width_ratios=[1, 1, 1])
 	ax[0] = plt.subplot(gs[0])
 
 	iaint = ax[0].bar(bins0i[1:], count_norm0i, alpha=.5, color='r', width=.1, align='center')
@@ -44,12 +46,12 @@ def make_fig(ind):
 	ax[0].set_xlabel(selected_feature_names[ind])
 	ax[0].set_ylabel("% of Patients")
 
-	ax[1].set_title('Inactive vs. 14+ Days')   #  \n \"Engaged\"
+	ax[1].set_title('Inactive vs. 14+ Days')   # \n \"Engaged\"
 	# ax[1].legend((aeng, iaeng), ('Active', 'Inactive'))
 	ax[1].set_xlabel(selected_feature_names[ind])
 	ax[1].set_ylabel("% of Patients")
 
-	ax[2].set_title('Inactive vs. 30+ Days')   #  \n \"Subscribed\"
+	ax[2].set_title('Inactive vs. 30+ Days')   # \n \"Subscribed\"
 	ax[2].legend((asub, iasub), ('Active', 'Inactive'), loc='center left', bbox_to_anchor=(1, 0.5))
 	ax[2].set_xlabel(selected_feature_names[ind])
 	ax[2].set_ylabel("% of Patients")
@@ -79,7 +81,7 @@ def make_figure():
 	plt.bar(bins0[1:], count_norm0, alpha=.4, color='b', width=.1, align='center')
 	plt.title(selected_feature_names[0])
 	plt.ylabel('% of Patients')
-	plt.legend(['Active', 'Inactive'], loc='upper left' )
+	plt.legend(['Active', 'Inactive'], loc='upper left')
 
 	canvas = FigureCanvas(fig)
 	img = BytesIO()
@@ -91,14 +93,14 @@ def ModelIt():
 	# import model
 	# with open('/Users/katieporter/Dropbox/Insight/CT/ct_private/rf_smo10featuresnorm_interested.b', 'rb') as f:
 	with open('./data/rf_smo10featuresnorm_interested.b', 'rb') as f:
-    # load using pickle de-serializer
-		deployed_model= pickle.load(f)
-	
+		# load using pickle de-serializer
+		deployed_model = pickle.load(f)
+
 	# import complete dataset 
 	final_features_raw_wid, final_features_raw, active_all = fns.import_features()
 
 	# get normalizing measures 
-	final_features_raw_array = np.array(final_features_raw_wid.drop('patient_id', axis = 1))
+	final_features_raw_array = np.array(final_features_raw_wid.drop('patient_id', axis=1))
 	final_features_mean = np.mean(final_features_raw_array, axis=0)
 	final_features_std = np.std(final_features_raw_array, axis=0)
 
@@ -106,7 +108,7 @@ def ModelIt():
 	# selected_feature_names = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/features_rf_smo10featuresnorm_interested.csv')
 	selected_feature_names = pd.read_csv('./data/features_rf_smo10featuresnorm_interested.csv')
 	selected_feature_names = list(selected_feature_names['0'])
-	
+
 	# import test data and labels 
 	test_data, test_labels, trainval_data, trainval_labels = fns.load_train_test_data()
 	
@@ -129,15 +131,15 @@ def ModelIt():
 	accuracy = accuracy_score(pred, testy)
 	accuracy_perc = accuracy*100
 
-	deployed_model.fit(testX,testy)
+	deployed_model.fit(testX, testy)
 
 	temp = final_features_raw_wid.merge(active_all, on='patient_id')
 	mean_diff_interested, mean_diff_engaged, mean_diff_subscribed = fns.get_avg_diff(temp, selected_feature_names)
 	mean_diff = mean_diff_interested
 	# mean_diff_interested = np.array(mean_diff_interested)
 	# mean_diff_interested = list(mean_diff_interested)
-	features_out = pd.DataFrame({'feature': selected_feature_names, 'importance': deployed_model.feature_importances_, 'diff2days': mean_diff}) # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
-	features_out['importance'] = features_out['importance'].round(3)
+	features_out = pd.DataFrame({'feature': selected_feature_names, 'importance': deployed_model.feature_importances_, 'diff2days': mean_diff})   # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
+	features_out['importance'] = features_out['importance'].round(3)*100
 	features_out['diff2days'] = features_out['diff2days'].round(3)
 	# features_out['diff_14_days'] = features_out['diff_14_days'].round(3)
 	# features_out['diff_30_days'] = features_out['diff_30_days'].round(3)
@@ -145,14 +147,76 @@ def ModelIt():
 	print(features_out['diff2days'], features_out['importance'])
 	return np.round(accuracy_perc, 1), features_out # np.round(accuracy_train, 3),
 
+def ModelItSubscribed():
+	# import model
+	# with open('/Users/katieporter/Dropbox/Insight/CT/ct_private/rf_smo10featuresnorm_interested.b', 'rb') as f:
+	with open('./data/rf_smo86featuresnorm_subscribed200_10.b', 'rb') as f:
+    # load using pickle de-serializer
+		deployed_model = pickle.load(f)
+	
+	# import complete dataset 
+	final_features_raw_wid, active_all, feature_names = fns.import_features_subscribed()
+
+	# get normalizing measures 
+	final_features_raw_array = np.array(final_features_raw_wid.drop('patient_id', axis = 1))
+	final_features_mean = np.mean(final_features_raw_array, axis=0)
+	final_features_std = np.std(final_features_raw_array, axis=0)
+
+	# get the selected features
+	# selected_feature_names = pd.read_csv('./data/features86_smo200_10.csv')
+	# selected_feature_names = list(selected_feature_names['0'])
+	
+	# import test data and labels 
+	test_data, test_labels, trainval_data, trainval_labels = fns.load_train_test_data()
+	
+	test_noid = test_data.drop('patient_id', axis=1)
+	
+	# only select columns of features in model
+	selected_features = pd.DataFrame()
+	for i in feature_names:
+		selected_features[i] = test_noid[i]
+	
+	test_features = np.array(selected_features)
+	
+	test_feature_norm = (test_features - final_features_mean) / final_features_std 
+	test_colnames = list(selected_features.columns.values)
+
+	test_data_norm = pd.DataFrame(test_feature_norm, columns = test_colnames)
+
+	# turn dataframes into arrays
+	testX = np.array(selected_features)
+	testy = np.array(test_labels['isactive_subscribed'])
+	
+	pred = deployed_model.predict(testX)
+	accuracy = accuracy_score(pred, testy)
+	accuracy_perc = accuracy*100
+
+	deployed_model.fit(testX, testy)
+
+	temp = final_features_raw_wid.merge(active_all, on='patient_id')
+	mean_diff_interested, mean_diff_engaged, mean_diff_subscribed = fns.get_avg_diff(temp, feature_names)
+	mean_diff = mean_diff_subscribed
+	
+	features_out = pd.DataFrame({'feature': feature_names, 'importance': deployed_model.feature_importances_, 'diffactInact': mean_diff}) # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
+	features_out['importance'] = features_out['importance'].round(3)*100
+	features_out['diffactInact'] = features_out['diffactInact'].round(3)
+	# features_out['diff_14_days'] = features_out['diff_14_days'].round(3)
+	# features_out['diff_30_days'] = features_out['diff_30_days'].round(3)
+
+	# FIX ME!!!!!!
+	accuracy_perc = 67.5
+
+	features_out = features_out.sort_values(by='importance', axis=0, ascending=False )
+	# print(features_out['diffactInact'], features_out['importance'])
+	return np.round(accuracy_perc, 1), features_out # np.round(accuracy_train, 3),
+
 # def ModelOne(fromUser  = 'Default', patient = []):
 def ModelOne(patient):
 		# import model
 	# with open('/Users/katieporter/Dropbox/Insight/CT/ct_private/rf_smo10featuresnorm_interested.b', 'rb') as f:
 	with open('./data/rf_smo10featuresnorm_interested.b', 'rb') as f:
-
     # load using pickle de-serializer
-		deployed_model= pickle.load(f)
+		deployed_model = pickle.load(f)
 	
 	# import complete dataset 
 	final_features_raw_wid, final_features_raw, active_all = fns.import_features()
@@ -168,11 +232,10 @@ def ModelOne(patient):
 	selected_feature_names = list(selected_feature_names['0'])
 
 	try:
-		patient=int(patient)
+		patient = int(patient)
 		# get row for just this patient
 		single_patient = final_features_raw_wid[final_features_raw_wid['patient_id']==patient]
 		
-
 		single_patient_noid = single_patient.drop('patient_id', axis=1)
 		test_features = np.array(single_patient_noid)
 		test_feature_norm = (test_features - final_features_mean) / final_features_std 
@@ -180,17 +243,16 @@ def ModelOne(patient):
 
 		test_data_norm = pd.DataFrame(test_feature_norm, columns = test_colnames)
 
-
 		selected_features = pd.DataFrame()
 		for i in selected_feature_names:
 			selected_features[i] = test_data_norm[i]
-
 
 		# extract status of patient (active/inactive)
 		temp = active_all[active_all['patient_id']==patient]
 		temp = active_all['isactive_interested']
 		temp2 = np.array(temp)
 		active_status = temp2[0]
+		print(active_status)
 		if active_status==1:
 			activity = 'is active'
 		else:
@@ -272,9 +334,35 @@ def ModelOne(patient):
 		prediction = prediction * 100
 		prediction = prediction.round(3)
 	except IndexError:
-		prediction = 'not calculable'; activity = 'is nonexistent'; assessment = 'please try a different patient id. Hint: try one greater than 1100!'
-		patient = '-'; active_status = '-'; avg_rt= '-'; first_trial_rt= '-'; avg_acc= '-'; level1acc= '-'; first_acc= '-'; platform= '-'; type37acc= '-';sumskipped= '-'; level2acc= '-'; type24acc= '-';
+		prediction = 'not calculable'
+		activity = 'is nonexistent'
+		assessment = 'please try a different patient id. Hint: try one greater than 1100!'
+		patient = '-'
+		active_status = '-'
+		avg_rt = '-' 
+		first_trial_rt = '-'
+		avg_acc = '-'
+		level1acc = '-'
+		first_acc = '-'
+		platform = '-'
+		type37acc = '-'
+		sumskipped = '-'
+		level2acc = '-'
+		type24acc = '-'
 	except ValueError:
-		prediction = 'not calculable'; activity = 'is nonexistent'; assessment = 'please try a different patient id. Hint: try one greater than 1100!'
-		patient = '-'; active_status = '-'; avg_rt= '-'; first_trial_rt= '-'; avg_acc= '-'; level1acc= '-'; first_acc= '-'; platform= '-'; type37acc= '-';sumskipped= '-'; level2acc= '-'; type24acc= '-';
+		prediction = 'not calculable'
+		activity = 'is nonexistent'
+		assessment = 'please try a different patient id. Hint: try one greater than 1100!'
+		patient = '-'
+		active_status = '-'
+		avg_rt = '-'
+		first_trial_rt = '-'
+		avg_acc = '-'
+		level1acc = '-'
+		first_acc = '-'
+		platform = '-'
+		type37acc = '-'
+		sumskipped = '-'
+		level2acc = '-'
+		type24acc = '-'
 	return prediction, activity, assessment, patient, active_status, avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc   
