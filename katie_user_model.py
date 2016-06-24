@@ -258,143 +258,143 @@ def ModelOne(patient):
 	activemean_np = np.array(final_features_activemean)
 	dropmean_np = np.array(final_features_dropmean)
 
-	# try:
-	patient = int(patient)
-	# get row for just this patient
-	single_patient = final_features_raw_wid[final_features_raw_wid['anon_id']==patient]
-	
-	single_patient_noid = single_patient.drop('anon_id', axis=1)
-	test_features = np.array(single_patient_noid)
-	test_feature_norm = (test_features - final_features_mean) / final_features_std 
-	test_colnames = list(single_patient_noid.columns.values)
+	try:
+		patient = int(patient)
+		# get row for just this patient
+		single_patient = final_features_raw_wid[final_features_raw_wid['anon_id']==patient]
+		
+		single_patient_noid = single_patient.drop('anon_id', axis=1)
+		test_features = np.array(single_patient_noid)
+		test_feature_norm = (test_features - final_features_mean) / final_features_std 
+		test_colnames = list(single_patient_noid.columns.values)
 
-	test_data_norm = pd.DataFrame(test_feature_norm, columns = test_colnames)
+		test_data_norm = pd.DataFrame(test_feature_norm, columns = test_colnames)
 
-	patientval = np.array(test_feature_norm[0,:])
-	comparison = pd.DataFrame({'feature': selected_feature_names, 'dropoff_mean': dropmean_np.round(3), 'patientval': patientval.round(3), 'active_mean': activemean_np.round(3)})
+		patientval = np.array(test_feature_norm[0,:])
+		comparison = pd.DataFrame({'feature': selected_feature_names, 'dropoff_mean': dropmean_np.round(3), 'patientval': patientval.round(3), 'active_mean': activemean_np.round(3)})
 
-	selected_features = pd.DataFrame()
-	for i in selected_feature_names:
-		selected_features[i] = test_data_norm[i]
+		selected_features = pd.DataFrame()
+		for i in selected_feature_names:
+			selected_features[i] = test_data_norm[i]
 
-	# extract status of patient (active/inactive)
-	temp = active_all[active_all['anon_id']==patient]
-	temp = active_all['isactive_interested']
-	temp2 = np.array(temp)
-	active_status = temp2[0]
-	print(active_status)
-	if active_status==1:
-		activity = 'is active'
-	else:
-	    activity = 'is not active'
-
-	# extract first 5 avg acc
-	temp = single_patient['mean_reaction_time'][single_patient['mean_reaction_time']>-1]
-	temp2 = np.array(temp)
-	avg_rt = temp2[0]
-
-	# # extract first 5 avg rt
-	temp = single_patient['first_trial_reaction_time'][single_patient['first_trial_reaction_time']>-1]
-	temp2 = np.array(temp)
-	first_trial_rt = temp2[0]
-
-	# # extract first 5 avg ratio completed
-	temp = single_patient['mean_accuracy'][single_patient['mean_accuracy']>-1]
-	temp2 = np.array(temp)
-	avg_acc = temp2[0]
-
-	# # extract first acc
-	temp = single_patient['task_level1_x_avg_accuracy'][single_patient['task_level1_x_avg_accuracy']>-1]
-	temp2 = np.array(temp)
-	level1acc = temp2[0]
-
-	# extract platform
-	temp = single_patient['first_trial_accuracy'][single_patient['first_trial_accuracy']>-1]
-	temp2 = np.array(temp)
-	first_acc = temp2[0]
-
-	# extract platform
-	temp = single_patient['client_platform'][single_patient['client_platform']>-1]
-	temp2 = np.array(temp)
-	platform= temp2[0]
-
-	# extract platform
-	temp = single_patient['task_type37_x_avg_accuracy'][single_patient['task_type37_x_avg_accuracy']>-1]
-	temp2 = np.array(temp)
-	type37acc= temp2[0]
-
-	temp = single_patient['sum_skipped_trials'][single_patient['sum_skipped_trials']>-1]
-	temp2 = np.array(temp)
-	sumskipped= temp2[0]
-
-	temp = single_patient['task_level2_x_avg_accuracy'][single_patient['task_level2_x_avg_accuracy']>-1]
-	temp2 = np.array(temp)
-	level2acc= temp2[0]
-	
-	temp = single_patient['task_type24_x_avg_accuracy'][single_patient['task_type24_x_avg_accuracy']>-1]
-	temp2 = np.array(temp)
-	type24acc = temp2[0]	
-
-	testX = np.array(selected_features)
-	pred = deployed_model.predict_proba(testX)
-	prediction = pred[0][0]
-	# prediction = prediction.round(3)
-	# insert recommendation for action here! after the pred 
-	if activity == 'is not active':
-		if prediction > .5: 	
-			assessment = 'The model predicted this user correctly'
-		elif prediction < .5:
-			assessment = 'The model was not correct for this user. No one is perfect!'
-		elif prediction == .5: 
-			assessment = 'This user seems to be on the fence!'
+		# extract status of patient (active/inactive)
+		temp = active_all[active_all['anon_id']==patient]
+		temp = active_all['isactive_interested']
+		temp2 = np.array(temp)
+		active_status = temp2[0]
+		print(active_status)
+		if active_status==1:
+			activity = 'is active'
 		else:
-			assessment = 'Error assessing model accuracy for this user'
-	elif activity == 'is active':
-		if prediction < .5: 
-			assessment = 'The model predicted this user correctly'
-		elif prediction > .5:
-			assessment = 'The model was not correct for this user. No one is perfect!'
-		elif prediction == .5: 
-			assessment = 'This user seems to be on the fence!'
-		else:
-			assessment = 'Error comparing model prediction and activity status for this patient'
-	else:
-		assessment = 'Error identifying patient activity status'
+		    activity = 'is not active'
 
-	prediction = prediction * 100
-	prediction = prediction.round(3)
-	# except IndexError:
-	# 	prediction = 'not calculable'
-	# 	activity = 'is nonexistent'
-	# 	assessment = 'please try a different patient id. Hint: try one less than 10187!'
-	# 	patient = '-'
-	# 	active_status = '-'
-	# 	avg_rt = '-' 
-	# 	first_trial_rt = '-'
-	# 	avg_acc = '-'
-	# 	level1acc = '-'
-	# 	first_acc = '-'
-	# 	platform = '-'
-	# 	type37acc = '-'
-	# 	sumskipped = '-'
-	# 	level2acc = '-'
-	# 	type24acc = '-'
-	# 	comparison=pd.DataFrame()
-	# except ValueError:
-	# 	prediction = 'not calculable'
-	# 	activity = 'is nonexistent'
-	# 	assessment = 'please try a different patient id. Hint: try one less than 10187!'
-	# 	patient = '-'
-	# 	active_status = '-'
-	# 	avg_rt = '-'
-	# 	first_trial_rt = '-'
-	# 	avg_acc = '-'
-	# 	level1acc = '-'
-	# 	first_acc = '-'
-	# 	platform = '-'
-	# 	type37acc = '-'
-	# 	sumskipped = '-'
-	# 	level2acc = '-'
-	# 	type24acc = '-'
-	# 	comparison=pd.DataFrame()
+		# extract first 5 avg acc
+		temp = single_patient['mean_reaction_time'][single_patient['mean_reaction_time']>-1]
+		temp2 = np.array(temp)
+		avg_rt = temp2[0]
+
+		# # extract first 5 avg rt
+		temp = single_patient['first_trial_reaction_time'][single_patient['first_trial_reaction_time']>-1]
+		temp2 = np.array(temp)
+		first_trial_rt = temp2[0]
+
+		# # extract first 5 avg ratio completed
+		temp = single_patient['mean_accuracy'][single_patient['mean_accuracy']>-1]
+		temp2 = np.array(temp)
+		avg_acc = temp2[0]
+
+		# # extract first acc
+		temp = single_patient['task_level1_x_avg_accuracy'][single_patient['task_level1_x_avg_accuracy']>-1]
+		temp2 = np.array(temp)
+		level1acc = temp2[0]
+
+		# extract platform
+		temp = single_patient['first_trial_accuracy'][single_patient['first_trial_accuracy']>-1]
+		temp2 = np.array(temp)
+		first_acc = temp2[0]
+
+		# extract platform
+		temp = single_patient['client_platform'][single_patient['client_platform']>-1]
+		temp2 = np.array(temp)
+		platform= temp2[0]
+
+		# extract platform
+		temp = single_patient['task_type37_x_avg_accuracy'][single_patient['task_type37_x_avg_accuracy']>-1]
+		temp2 = np.array(temp)
+		type37acc= temp2[0]
+
+		temp = single_patient['sum_skipped_trials'][single_patient['sum_skipped_trials']>-1]
+		temp2 = np.array(temp)
+		sumskipped= temp2[0]
+
+		temp = single_patient['task_level2_x_avg_accuracy'][single_patient['task_level2_x_avg_accuracy']>-1]
+		temp2 = np.array(temp)
+		level2acc= temp2[0]
+		
+		temp = single_patient['task_type24_x_avg_accuracy'][single_patient['task_type24_x_avg_accuracy']>-1]
+		temp2 = np.array(temp)
+		type24acc = temp2[0]	
+
+		testX = np.array(selected_features)
+		pred = deployed_model.predict_proba(testX)
+		prediction = pred[0][0]
+		# prediction = prediction.round(3)
+		# insert recommendation for action here! after the pred 
+		if activity == 'is not active':
+			if prediction > .5: 	
+				assessment = 'The model predicted this user correctly'
+			elif prediction < .5:
+				assessment = 'The model was not correct for this user. No one is perfect!'
+			elif prediction == .5: 
+				assessment = 'This user seems to be on the fence!'
+			else:
+				assessment = 'Error assessing model accuracy for this user'
+		elif activity == 'is active':
+			if prediction < .5: 
+				assessment = 'The model predicted this user correctly'
+			elif prediction > .5:
+				assessment = 'The model was not correct for this user. No one is perfect!'
+			elif prediction == .5: 
+				assessment = 'This user seems to be on the fence!'
+			else:
+				assessment = 'Error comparing model prediction and activity status for this patient'
+		else:
+			assessment = 'Error identifying patient activity status'
+
+		prediction = prediction * 100
+		prediction = prediction.round(3)
+	except IndexError:
+		prediction = 'not calculable'
+		activity = 'is nonexistent'
+		assessment = 'please try a different patient id. Hint: try one less than 10187!'
+		patient = '-'
+		active_status = '-'
+		avg_rt = '-' 
+		first_trial_rt = '-'
+		avg_acc = '-'
+		level1acc = '-'
+		first_acc = '-'
+		platform = '-'
+		type37acc = '-'
+		sumskipped = '-'
+		level2acc = '-'
+		type24acc = '-'
+		comparison=pd.DataFrame()
+	except ValueError:
+		prediction = 'not calculable'
+		activity = 'is nonexistent'
+		assessment = 'please try a different patient id. Hint: try one less than 10187!'
+		patient = '-'
+		active_status = '-'
+		avg_rt = '-'
+		first_trial_rt = '-'
+		avg_acc = '-'
+		level1acc = '-'
+		first_acc = '-'
+		platform = '-'
+		type37acc = '-'
+		sumskipped = '-'
+		level2acc = '-'
+		type24acc = '-'
+		comparison=pd.DataFrame()
 	return prediction, activity, assessment, patient, active_status, avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc, comparison   
