@@ -279,7 +279,7 @@ def ModelOne(patient):
 
 		# extract status of patient (active/inactive)
 		temp = active_all[active_all['anon_id']==patient]
-		temp = active_all['isactive_interested']
+		temp = temp['greater1sess']
 		temp2 = np.array(temp)
 		active_status = temp2[0]
 		print(active_status)
