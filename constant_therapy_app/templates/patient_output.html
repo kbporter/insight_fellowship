@@ -23,7 +23,16 @@
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+    <script src="../../assets/js/ie-emulation-modes-warning.js"> $(document).ready(function(){
+    $('#table_diff td.p_n').each(function(){
+         var thisCell = $(this);
+         var cellValue = parseInt(thisCell.text());
+
+        if (!isNaN(cellValue) && (cellValue > 0 ) {
+            thisCell.css('background-color','#f00');
+        }
+    });
+});</script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -52,7 +61,7 @@
             <li><a href="http://churnnomore.me/slides">Slides</a></li>
             <li><a href="http://churnnomore.me/contact">Contact</a></li>
           </ul>
-          <img src="../static/image/logo.png" alt="CustomerChurn" width="200" height="auto" style="float:right">
+          <img src="../static/image/logo_white.png" alt="CustomerChurn" width="200" height="auto" style="float:right">
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -80,21 +89,8 @@
     <div class="container">
       <div class="starter-template">
         <h3>Prediction:</h3>
-        <!-- <p class="lead">Below is the result of your query.<br> You just took user input and looked up the information. Now we need to expand the functionality!</p> -->
       </div>
-      <!-- use the below for to_html with pandas  -->
-<!--       {{table | safe}} -->
-      <!-- <br> <br>
-
-      <table class="table table-hover">
-      <tr><th>Feature</th><th>Importance</th></tr>
-      {% for row in table %}
-      <tr><td>{{row['feature']}}</td><td> {{row['importance']}}</td></tr>
-      {% endfor %}
-      </table> -->
-
-
-     </div><!-- /.container -->
+    </div><!-- /.container -->
 
     <div class="container">
       <div class="starter-template">
@@ -102,9 +98,17 @@
         <p class="lead"> The likelihood that this patient is a drop-off case is {{prediction}}% The actual status of this patient {{activity}}. {{assessment}}</p>
       </div>
 
+
       <table class="table table-hover">
       <tr><th>Patient</th><th>Average Reaction Time</th><th>First Trial Reaction Time</th><th>Average Accuracy</th><th>Difficulty 1 * Accuracy</th><th>First Trial Accuracy</th><th>Platform Used</th><th>Task 37 * Accuracy</th><th>Trials Skipped</th><th>Difficulty 2 * Accuracy</th><th>Task 24 * Accuracy</th><th>Actual Status (0=Inactive)</th></tr>
-      <tr><td>{{patient}}</td><td> {{avg_rt}}</td><td> {{first_trial_rt}}</td><td> {{avg_acc}}</td><td> {{level1acc}}</td><td> {{first_acc}}</td> <td> {{platform}}</td><td> {{type37acc}}</td><td> {{sumskipped}}</td><td> {{level2acc}}</td><td> {{type24acc}}</td><td> {{active_status}}</td></tr>
+      <tr><td>{{patient}}</td><td class="p_n"> {{avg_rt}}</td><td class="p_n"> {{first_trial_rt}}</td><td class="p_n"> {{avg_acc}}</td><td class="p_n"> {{level1acc}}</td><td class="p_n"> {{first_acc}}</td> <td class="p_n"> {{platform}}</td><td class="p_n"> {{type37acc}}</td><td class="p_n"> {{sumskipped}}</td><td class="p_n"> {{level2acc}}</td><td class="p_n"> {{type24acc}}</td><td> {{active_status}}</td></tr>
+      </table>  
+
+      <table> 
+        <tr><th> Feature </th> <th>   </th> <th> Drop-off Mean </th> <th>   </th><th> Patient </th> <th>   </th><th> Active Mean </th> </tr> 
+        {% for row in comptable %}
+      <tr><td> {{row['feature']}}</td> <td>  </td><td> {{row['dropoff_mean']}} </td> <td>  </td><td align="center"> {{row['patientval']}}</td><td>  </td><td align="center"> {{row['activemean']}}</td></tr>
+      {% endfor %}
       </table>
 
       <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>

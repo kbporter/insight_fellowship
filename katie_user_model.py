@@ -92,7 +92,9 @@ def make_figure():
 def ModelIt():
 	# import model
 	# with open('/Users/katieporter/Dropbox/Insight/CT/ct_private/rf_smo10featuresnorm_interested.b', 'rb') as f:
-	with open('./data/rf_smo10featuresnorm_interested.b', 'rb') as f:
+	# with open('./data/rf_smo10featuresnorm_interested.b', 'rb') as f:
+	with open('./data/rf_smo20featuresnorm_session300_15.b', 'rb') as f:
+
 		# load using pickle de-serializer
 		deployed_model = pickle.load(f)
 
@@ -106,16 +108,19 @@ def ModelIt():
 
 	# get the selected features
 	# selected_feature_names = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/features_rf_smo10featuresnorm_interested.csv')
-	selected_feature_names = pd.read_csv('./data/features_rf_smo10featuresnorm_interested.csv')
-	selected_feature_names = list(selected_feature_names['0'])
+	# selected_feature_names = pd.read_csv('./data/features_rf_smo10featuresnorm_interested.csv')
+	selected_feature_names = list(final_features_raw.columns.values)
 
 	# import test data and labels 
 	test_data, test_labels, trainval_data, trainval_labels = fns.load_train_test_data()
 	
-	test_noid = test_data.drop('anon_id', axis=1)
-	test_features = np.array(test_noid)
+	test_data = test_data[selected_feature_names]
+
+	# test_noid = test_data.drop('anon_id', axis=1)
+	# test_features = np.array(test_noid)
+	test_features = np.array(test_data)
 	test_feature_norm = (test_features - final_features_mean) / final_features_std 
-	test_colnames = list(test_noid.columns.values)
+	test_colnames = list(test_data.columns.values)
 
 	test_data_norm = pd.DataFrame(test_feature_norm, columns = test_colnames)
 
@@ -125,7 +130,9 @@ def ModelIt():
 	
 	# turn dataframes into arrays
 	testX = np.array(selected_features)
-	testy = np.array(test_labels['isactive_interested'])
+	test_labels['greater1'][pd.isnull(test_labels['greater1'])] = 1
+	testy = np.array(test_labels['greater1'])
+
 	
 	pred = deployed_model.predict(testX)
 	accuracy = accuracy_score(pred, testy)
@@ -147,74 +154,76 @@ def ModelIt():
 	print(features_out['diff2days'], features_out['importance'])
 	return np.round(accuracy_perc, 1), features_out # np.round(accuracy_train, 3),
 
-def ModelItSubscribed():
-	# import model
-	# with open('/Users/katieporter/Dropbox/Insight/CT/ct_private/rf_smo10featuresnorm_interested.b', 'rb') as f:
-	with open('./data/rf_smo86featuresnorm_subscribed200_10.b', 'rb') as f:
-    # load using pickle de-serializer
-		deployed_model = pickle.load(f)
+# def ModelItSubscribed():
+# 	# import model
+# 	# with open('/Users/katieporter/Dropbox/Insight/CT/ct_private/rf_smo10featuresnorm_interested.b', 'rb') as f:
+# 	with open('./data/rf_smo86featuresnorm_subscribed200_10.b', 'rb') as f:
+#     # load using pickle de-serializer
+# 		deployed_model = pickle.load(f)
 	
-	# import complete dataset 
-	final_features_raw_wid, active_all, feature_names = fns.import_features_subscribed()
+# 	# import complete dataset 
+# 	final_features_raw_wid, active_all, feature_names = fns.import_features_subscribed()
 
-	# get normalizing measures 
-	final_features_raw_array = np.array(final_features_raw_wid.drop('anon_id', axis = 1))
-	final_features_mean = np.mean(final_features_raw_array, axis=0)
-	final_features_std = np.std(final_features_raw_array, axis=0)
+# 	# get normalizing measures 
+# 	final_features_raw_array = np.array(final_features_raw_wid.drop('anon_id', axis = 1))
+# 	final_features_mean = np.mean(final_features_raw_array, axis=0)
+# 	final_features_std = np.std(final_features_raw_array, axis=0)
 
-	# get the selected features
-	# selected_feature_names = pd.read_csv('./data/features86_smo200_10.csv')
-	# selected_feature_names = list(selected_feature_names['0'])
+# 	# get the selected features
+# 	# selected_feature_names = pd.read_csv('./data/features86_smo200_10.csv')
+# 	# selected_feature_names = list(selected_feature_names['0'])
 	
-	# import test data and labels 
-	test_data, test_labels, trainval_data, trainval_labels = fns.load_train_test_data()
+# 	# import test data and labels 
+# 	test_data, test_labels, trainval_data, trainval_labels = fns.load_train_test_data()
 	
-	test_noid = test_data.drop('anon_id', axis=1)
+# 	test_noid = test_data.drop('anon_id', axis=1)
 	
-	# only select columns of features in model
-	selected_features = pd.DataFrame()
-	for i in feature_names:
-		selected_features[i] = test_noid[i]
+# 	# only select columns of features in model
+# 	selected_features = pd.DataFrame()
+# 	for i in feature_names:
+# 		selected_features[i] = test_noid[i]
 	
-	test_features = np.array(selected_features)
+# 	test_features = np.array(selected_features)
 	
-	test_feature_norm = (test_features - final_features_mean) / final_features_std 
-	test_colnames = list(selected_features.columns.values)
+# 	test_feature_norm = (test_features - final_features_mean) / final_features_std 
+# 	test_colnames = list(selected_features.columns.values)
 
-	test_data_norm = pd.DataFrame(test_feature_norm, columns = test_colnames)
+# 	test_data_norm = pd.DataFrame(test_feature_norm, columns = test_colnames)
 
-	# turn dataframes into arrays
-	testX = np.array(selected_features)
-	testy = np.array(test_labels['isactive_subscribed'])
+# 	# turn dataframes into arrays
+# 	testX = np.array(selected_features)
+# 	testy = np.array(test_labels['isactive_subscribed'])
 	
-	pred = deployed_model.predict(testX)
-	accuracy = accuracy_score(pred, testy)
-	accuracy_perc = accuracy*100
+# 	pred = deployed_model.predict(testX)
+# 	accuracy = accuracy_score(pred, testy)
+# 	accuracy_perc = accuracy*100
 
-	deployed_model.fit(testX, testy)
+# 	deployed_model.fit(testX, testy)
 
-	temp = final_features_raw_wid.merge(active_all, on='anon_id')
-	mean_diff_interested, mean_diff_engaged, mean_diff_subscribed = fns.get_avg_diff(temp, feature_names)
-	mean_diff = mean_diff_subscribed
+# 	temp = final_features_raw_wid.merge(active_all, on='anon_id')
+# 	mean_diff_interested, mean_diff_engaged, mean_diff_subscribed = fns.get_avg_diff(temp, feature_names)
+# 	mean_diff = mean_diff_subscribed
 	
-	features_out = pd.DataFrame({'feature': feature_names, 'importance': deployed_model.feature_importances_, 'diffactInact': mean_diff}) # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
-	features_out['importance'] = features_out['importance'].round(3)*100
-	features_out['diffactInact'] = features_out['diffactInact'].round(3)
-	# features_out['diff_14_days'] = features_out['diff_14_days'].round(3)
-	# features_out['diff_30_days'] = features_out['diff_30_days'].round(3)
+# 	features_out = pd.DataFrame({'feature': feature_names, 'importance': deployed_model.feature_importances_, 'diffactInact': mean_diff}) # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
+# 	features_out['importance'] = features_out['importance'].round(3)*100
+# 	features_out['diffactInact'] = features_out['diffactInact'].round(3)
+# 	# features_out['diff_14_days'] = features_out['diff_14_days'].round(3)
+# 	# features_out['diff_30_days'] = features_out['diff_30_days'].round(3)
 
-	# FIX ME!!!!!!
-	accuracy_perc = 67.5
+# 	# FIX ME!!!!!!
+# 	accuracy_perc = 67.5
 
-	features_out = features_out.sort_values(by='importance', axis=0, ascending=False )
-	# print(features_out['diffactInact'], features_out['importance'])
-	return np.round(accuracy_perc, 1), features_out # np.round(accuracy_train, 3),
+# 	features_out = features_out.sort_values(by='importance', axis=0, ascending=False )
+# 	# print(features_out['diffactInact'], features_out['importance'])
+# 	return np.round(accuracy_perc, 1), features_out # np.round(accuracy_train, 3),
 
-# def ModelOne(fromUser  = 'Default', patient = []):
+# # def ModelOne(fromUser  = 'Default', patient = []):
 def ModelOne(patient):
 		# import model
 	# with open('/Users/katieporter/Dropbox/Insight/CT/ct_private/rf_smo10featuresnorm_interested.b', 'rb') as f:
-	with open('./data/rf_smo10featuresnorm_interested.b', 'rb') as f:
+	# with open('./data/rf_smo10featuresnorm_interested.b', 'rb') as f:
+	with open('./data/rf_smo20featuresnorm_session300_15.b', 'rb') as f:
+
     # load using pickle de-serializer
 		deployed_model = pickle.load(f)
 	
@@ -222,147 +231,170 @@ def ModelOne(patient):
 	final_features_raw_wid, final_features_raw, active_all = fns.import_features()
 
 	# get normalizing measures 
-	final_features_raw_array = np.array(final_features_raw_wid.drop('anon_id', axis = 1))
+	final_features_raw_array = np.array(final_features_raw_wid.drop(['anon_id'], axis = 1))
 	final_features_mean = np.mean(final_features_raw_array, axis=0)
 	final_features_std = np.std(final_features_raw_array, axis=0)
 
 	# get the selected features
 	# selected_feature_names = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/features_rf_smo10featuresnorm_interested.csv')
-	selected_feature_names = pd.read_csv('./data/features_rf_smo10featuresnorm_interested.csv')
-	selected_feature_names = list(selected_feature_names['0'])
+	# selected_feature_names = pd.read_csv('./data/features_rf_smo10featuresnorm_interested.csv')
+	# selected_feature_names = list(selected_feature_names['0'])
+	selected_feature_names = list(final_features_raw.columns.values)
 
-	try:
-		patient = int(patient)
-		# get row for just this patient
-		single_patient = final_features_raw_wid[final_features_raw_wid['anon_id']==patient]
-		
-		single_patient_noid = single_patient.drop('anon_id', axis=1)
-		test_features = np.array(single_patient_noid)
-		test_feature_norm = (test_features - final_features_mean) / final_features_std 
-		test_colnames = list(single_patient_noid.columns.values)
+	# get normalized feature set 
+	final_features_norm = (final_features_raw - final_features_mean) / final_features_std 
 
-		test_data_norm = pd.DataFrame(test_feature_norm, columns = test_colnames)
+	# merge w. active status
+	final_features_norm['status'] = active_all['greater1sess']
 
-		selected_features = pd.DataFrame()
-		for i in selected_feature_names:
-			selected_features[i] = test_data_norm[i]
+	# group by active status
+	final_features_norm_group = final_features_norm.groupby(by='status',axis=0)
 
-		# extract status of patient (active/inactive)
-		temp = active_all[active_all['anon_id']==patient]
-		temp = active_all['isactive_interested']
-		temp2 = np.array(temp)
-		active_status = temp2[0]
-		print(active_status)
-		if active_status==1:
-			activity = 'is active'
+	final_features_activemean = final_features_norm_group.get_group(1).mean()
+	final_features_dropmean = final_features_norm_group.get_group(0).mean()
+	final_features_dropmean = final_features_dropmean.drop('status')
+	final_features_activemean = final_features_activemean.drop('status')
+
+	activemean_np = np.array(final_features_activemean)
+	dropmean_np = np.array(final_features_dropmean)
+
+	# try:
+	patient = int(patient)
+	# get row for just this patient
+	single_patient = final_features_raw_wid[final_features_raw_wid['anon_id']==patient]
+	
+	single_patient_noid = single_patient.drop('anon_id', axis=1)
+	test_features = np.array(single_patient_noid)
+	test_feature_norm = (test_features - final_features_mean) / final_features_std 
+	test_colnames = list(single_patient_noid.columns.values)
+
+	test_data_norm = pd.DataFrame(test_feature_norm, columns = test_colnames)
+
+	patientval = np.array(test_feature_norm[0,:])
+	comparison = pd.DataFrame({'feature': selected_feature_names, 'dropoff_mean': dropmean_np.round(3), 'patientval': patientval.round(3), 'active_mean': activemean_np.round(3)})
+
+	selected_features = pd.DataFrame()
+	for i in selected_feature_names:
+		selected_features[i] = test_data_norm[i]
+
+	# extract status of patient (active/inactive)
+	temp = active_all[active_all['anon_id']==patient]
+	temp = active_all['isactive_interested']
+	temp2 = np.array(temp)
+	active_status = temp2[0]
+	print(active_status)
+	if active_status==1:
+		activity = 'is active'
+	else:
+	    activity = 'is not active'
+
+	# extract first 5 avg acc
+	temp = single_patient['mean_reaction_time'][single_patient['mean_reaction_time']>-1]
+	temp2 = np.array(temp)
+	avg_rt = temp2[0]
+
+	# # extract first 5 avg rt
+	temp = single_patient['first_trial_reaction_time'][single_patient['first_trial_reaction_time']>-1]
+	temp2 = np.array(temp)
+	first_trial_rt = temp2[0]
+
+	# # extract first 5 avg ratio completed
+	temp = single_patient['mean_accuracy'][single_patient['mean_accuracy']>-1]
+	temp2 = np.array(temp)
+	avg_acc = temp2[0]
+
+	# # extract first acc
+	temp = single_patient['task_level1_x_avg_accuracy'][single_patient['task_level1_x_avg_accuracy']>-1]
+	temp2 = np.array(temp)
+	level1acc = temp2[0]
+
+	# extract platform
+	temp = single_patient['first_trial_accuracy'][single_patient['first_trial_accuracy']>-1]
+	temp2 = np.array(temp)
+	first_acc = temp2[0]
+
+	# extract platform
+	temp = single_patient['client_platform'][single_patient['client_platform']>-1]
+	temp2 = np.array(temp)
+	platform= temp2[0]
+
+	# extract platform
+	temp = single_patient['task_type37_x_avg_accuracy'][single_patient['task_type37_x_avg_accuracy']>-1]
+	temp2 = np.array(temp)
+	type37acc= temp2[0]
+
+	temp = single_patient['sum_skipped_trials'][single_patient['sum_skipped_trials']>-1]
+	temp2 = np.array(temp)
+	sumskipped= temp2[0]
+
+	temp = single_patient['task_level2_x_avg_accuracy'][single_patient['task_level2_x_avg_accuracy']>-1]
+	temp2 = np.array(temp)
+	level2acc= temp2[0]
+	
+	temp = single_patient['task_type24_x_avg_accuracy'][single_patient['task_type24_x_avg_accuracy']>-1]
+	temp2 = np.array(temp)
+	type24acc = temp2[0]	
+
+	testX = np.array(selected_features)
+	pred = deployed_model.predict_proba(testX)
+	prediction = pred[0][0]
+	# prediction = prediction.round(3)
+	# insert recommendation for action here! after the pred 
+	if activity == 'is not active':
+		if prediction > .5: 	
+			assessment = 'The model predicted this user correctly'
+		elif prediction < .5:
+			assessment = 'The model was not correct for this user. No one is perfect!'
+		elif prediction == .5: 
+			assessment = 'This user seems to be on the fence!'
 		else:
-		    activity = 'is not active'
-
-		# extract first 5 avg acc
-		temp = single_patient['mean_reaction_time'][single_patient['mean_reaction_time']>-1]
-		temp2 = np.array(temp)
-		avg_rt = temp2[0]
-
-		# # extract first 5 avg rt
-		temp = single_patient['first_trial_reaction_time'][single_patient['first_trial_reaction_time']>-1]
-		temp2 = np.array(temp)
-		first_trial_rt = temp2[0]
-
-		# # extract first 5 avg ratio completed
-		temp = single_patient['mean_accuracy'][single_patient['mean_accuracy']>-1]
-		temp2 = np.array(temp)
-		avg_acc = temp2[0]
-
-		# # extract first acc
-		temp = single_patient['task_level1_x_avg_accuracy'][single_patient['task_level1_x_avg_accuracy']>-1]
-		temp2 = np.array(temp)
-		level1acc = temp2[0]
-
-		# extract platform
-		temp = single_patient['first_trial_accuracy'][single_patient['first_trial_accuracy']>-1]
-		temp2 = np.array(temp)
-		first_acc = temp2[0]
-
-		# extract platform
-		temp = single_patient['client_platform'][single_patient['client_platform']>-1]
-		temp2 = np.array(temp)
-		platform= temp2[0]
-
-		# extract platform
-		temp = single_patient['task_type37_x_avg_accuracy'][single_patient['task_type37_x_avg_accuracy']>-1]
-		temp2 = np.array(temp)
-		type37acc= temp2[0]
-
-		temp = single_patient['sum_skipped_trials'][single_patient['sum_skipped_trials']>-1]
-		temp2 = np.array(temp)
-		sumskipped= temp2[0]
-
-		temp = single_patient['task_level2_x_avg_accuracy'][single_patient['task_level2_x_avg_accuracy']>-1]
-		temp2 = np.array(temp)
-		level2acc= temp2[0]
-		
-		temp = single_patient['task_type24_x_avg_accuracy'][single_patient['task_type24_x_avg_accuracy']>-1]
-		temp2 = np.array(temp)
-		type24acc = temp2[0]	
-
-		testX = np.array(selected_features)
-		pred = deployed_model.predict_proba(testX)
-		prediction = pred[0][0]
-		# prediction = prediction.round(3)
-		# insert recommendation for action here! after the pred 
-		if activity == 'is not active':
-			if prediction > .5: 
-				assessment = 'The model predicted this user correctly'
-			elif prediction < .5:
-				assessment = 'The model was not correct for this user. No one is perfect!'
-			elif prediction == .5: 
-				assessment = 'This user seems to be on the fence!'
-			else:
-				assessment = 'Error assessing model accuracy for this user'
-		elif activity == 'is active':
-			if prediction < .5: 
-				assessment = 'The model predicted this user correctly'
-			elif prediction > .5:
-				assessment = 'The model was not correct for this user. No one is perfect!'
-			elif prediction == .5: 
-				assessment = 'This user seems to be on the fence!'
-			else:
-				assessment = 'Error comparing model prediction and activity status for this patient'
+			assessment = 'Error assessing model accuracy for this user'
+	elif activity == 'is active':
+		if prediction < .5: 
+			assessment = 'The model predicted this user correctly'
+		elif prediction > .5:
+			assessment = 'The model was not correct for this user. No one is perfect!'
+		elif prediction == .5: 
+			assessment = 'This user seems to be on the fence!'
 		else:
-			assessment = 'Error identifying patient activity status'
+			assessment = 'Error comparing model prediction and activity status for this patient'
+	else:
+		assessment = 'Error identifying patient activity status'
 
-		prediction = prediction * 100
-		prediction = prediction.round(3)
-	except IndexError:
-		prediction = 'not calculable'
-		activity = 'is nonexistent'
-		assessment = 'please try a different patient id. Hint: try one less than 10187!'
-		patient = '-'
-		active_status = '-'
-		avg_rt = '-' 
-		first_trial_rt = '-'
-		avg_acc = '-'
-		level1acc = '-'
-		first_acc = '-'
-		platform = '-'
-		type37acc = '-'
-		sumskipped = '-'
-		level2acc = '-'
-		type24acc = '-'
-	except ValueError:
-		prediction = 'not calculable'
-		activity = 'is nonexistent'
-		assessment = 'please try a different patient id. Hint: try one less than 10187!'
-		patient = '-'
-		active_status = '-'
-		avg_rt = '-'
-		first_trial_rt = '-'
-		avg_acc = '-'
-		level1acc = '-'
-		first_acc = '-'
-		platform = '-'
-		type37acc = '-'
-		sumskipped = '-'
-		level2acc = '-'
-		type24acc = '-'
-	return prediction, activity, assessment, patient, active_status, avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc   
+	prediction = prediction * 100
+	prediction = prediction.round(3)
+	# except IndexError:
+	# 	prediction = 'not calculable'
+	# 	activity = 'is nonexistent'
+	# 	assessment = 'please try a different patient id. Hint: try one less than 10187!'
+	# 	patient = '-'
+	# 	active_status = '-'
+	# 	avg_rt = '-' 
+	# 	first_trial_rt = '-'
+	# 	avg_acc = '-'
+	# 	level1acc = '-'
+	# 	first_acc = '-'
+	# 	platform = '-'
+	# 	type37acc = '-'
+	# 	sumskipped = '-'
+	# 	level2acc = '-'
+	# 	type24acc = '-'
+	# 	comparison=pd.DataFrame()
+	# except ValueError:
+	# 	prediction = 'not calculable'
+	# 	activity = 'is nonexistent'
+	# 	assessment = 'please try a different patient id. Hint: try one less than 10187!'
+	# 	patient = '-'
+	# 	active_status = '-'
+	# 	avg_rt = '-'
+	# 	first_trial_rt = '-'
+	# 	avg_acc = '-'
+	# 	level1acc = '-'
+	# 	first_acc = '-'
+	# 	platform = '-'
+	# 	type37acc = '-'
+	# 	sumskipped = '-'
+	# 	level2acc = '-'
+	# 	type24acc = '-'
+	# 	comparison=pd.DataFrame()
+	return prediction, activity, assessment, patient, active_status, avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc, comparison   

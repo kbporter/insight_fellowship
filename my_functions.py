@@ -35,7 +35,10 @@ def isactive_subscribed(x):
 def import_features():
 	# final_features_raw_wid = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/final_all_features_wid.csv')
 	# final_features_raw_wid = pd.read_csv('./data/final_all_features_wid.csv')
-	final_features_raw_wid = pd.read_csv('./data/anon_features_wid.csv')
+	# final_features_raw_wid = pd.read_csv('./data/anon_features_wid.csv')
+	final_features_raw_wid = pd.read_csv('./data/final_session_20.csv')
+	final_features_raw_wid = final_features_raw_wid.drop('greater1sess', axis=1)
+
 	final_features_raw = final_features_raw_wid.drop('anon_id', axis=1)
 	# active_nonan = pd.read_csv('/Users/katieporter/Dropbox/Insight/CT/ct_private/active_nonan.csv')
 	active_nonan = pd.read_csv('./data/active_anon.csv')
@@ -45,7 +48,9 @@ def import_features():
 	active_all = pd.DataFrame({'anon_id': active_nonan['anon_id'], 
                           'isactive_interested': active_nonan['isactive_interested'],
                           'isactive_engaged': active_nonan['isactive_engaged'], 
-                          'isactive_subscribed': active_nonan['isactive_subscribed']})
+                          'isactive_subscribed': active_nonan['isactive_subscribed'],
+                          'greater1sess': active_nonan['greater1sess']
+                          })
 	return final_features_raw_wid, final_features_raw, active_all
 
 def import_features_subscribed():		
@@ -56,7 +61,8 @@ def import_features_subscribed():
 	active_all = pd.DataFrame({'anon_id': active_nonan['anon_id'], 
                           'isactive_interested': active_nonan['isactive_interested'],
                           'isactive_engaged': active_nonan['isactive_engaged'], 
-                          'isactive_subscribed': active_nonan['isactive_subscribed']})
+                          'isactive_subscribed': active_nonan['isactive_subscribed'],
+                          'greater1sess': active_nonan['greater1sess']})
 	final_features_noid = final_features_raw_wid.drop('anon_id', axis=1)
 	feature_names = list(final_features_noid.columns.values)
 
