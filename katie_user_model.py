@@ -65,7 +65,7 @@ def make_figure():
 	final_features_raw_wid, final_features_raw, active_all = fns.import_features()
 	selected_feature_names = pd.read_csv('./data/features_rf_smo10featuresnorm_interested.csv')
 	selected_feature_names = list(selected_feature_names['0'])
-	temp = final_features_raw_wid.merge(active_all, on='patient_id')
+	temp = final_features_raw_wid.merge(active_all, on='anon_id')
 
 	activegroup = pd.groupby(temp, by='isactive_interested')
 	active = activegroup.get_group(1)
@@ -100,7 +100,7 @@ def ModelIt():
 	final_features_raw_wid, final_features_raw, active_all = fns.import_features()
 
 	# get normalizing measures 
-	final_features_raw_array = np.array(final_features_raw_wid.drop('patient_id', axis=1))
+	final_features_raw_array = np.array(final_features_raw_wid.drop('anon_id', axis=1))
 	final_features_mean = np.mean(final_features_raw_array, axis=0)
 	final_features_std = np.std(final_features_raw_array, axis=0)
 
@@ -112,7 +112,7 @@ def ModelIt():
 	# import test data and labels 
 	test_data, test_labels, trainval_data, trainval_labels = fns.load_train_test_data()
 	
-	test_noid = test_data.drop('patient_id', axis=1)
+	test_noid = test_data.drop('anon_id', axis=1)
 	test_features = np.array(test_noid)
 	test_feature_norm = (test_features - final_features_mean) / final_features_std 
 	test_colnames = list(test_noid.columns.values)
@@ -133,7 +133,7 @@ def ModelIt():
 
 	deployed_model.fit(testX, testy)
 
-	temp = final_features_raw_wid.merge(active_all, on='patient_id')
+	temp = final_features_raw_wid.merge(active_all, on='anon_id')
 	mean_diff_interested, mean_diff_engaged, mean_diff_subscribed = fns.get_avg_diff(temp, selected_feature_names)
 	mean_diff = mean_diff_interested
 	# mean_diff_interested = np.array(mean_diff_interested)
@@ -158,7 +158,7 @@ def ModelItSubscribed():
 	final_features_raw_wid, active_all, feature_names = fns.import_features_subscribed()
 
 	# get normalizing measures 
-	final_features_raw_array = np.array(final_features_raw_wid.drop('patient_id', axis = 1))
+	final_features_raw_array = np.array(final_features_raw_wid.drop('anon_id', axis = 1))
 	final_features_mean = np.mean(final_features_raw_array, axis=0)
 	final_features_std = np.std(final_features_raw_array, axis=0)
 
@@ -169,7 +169,7 @@ def ModelItSubscribed():
 	# import test data and labels 
 	test_data, test_labels, trainval_data, trainval_labels = fns.load_train_test_data()
 	
-	test_noid = test_data.drop('patient_id', axis=1)
+	test_noid = test_data.drop('anon_id', axis=1)
 	
 	# only select columns of features in model
 	selected_features = pd.DataFrame()
@@ -193,7 +193,7 @@ def ModelItSubscribed():
 
 	deployed_model.fit(testX, testy)
 
-	temp = final_features_raw_wid.merge(active_all, on='patient_id')
+	temp = final_features_raw_wid.merge(active_all, on='anon_id')
 	mean_diff_interested, mean_diff_engaged, mean_diff_subscribed = fns.get_avg_diff(temp, feature_names)
 	mean_diff = mean_diff_subscribed
 	
@@ -222,7 +222,7 @@ def ModelOne(patient):
 	final_features_raw_wid, final_features_raw, active_all = fns.import_features()
 
 	# get normalizing measures 
-	final_features_raw_array = np.array(final_features_raw_wid.drop('patient_id', axis = 1))
+	final_features_raw_array = np.array(final_features_raw_wid.drop('anon_id', axis = 1))
 	final_features_mean = np.mean(final_features_raw_array, axis=0)
 	final_features_std = np.std(final_features_raw_array, axis=0)
 
@@ -234,9 +234,9 @@ def ModelOne(patient):
 	try:
 		patient = int(patient)
 		# get row for just this patient
-		single_patient = final_features_raw_wid[final_features_raw_wid['patient_id']==patient]
+		single_patient = final_features_raw_wid[final_features_raw_wid['anon_id']==patient]
 		
-		single_patient_noid = single_patient.drop('patient_id', axis=1)
+		single_patient_noid = single_patient.drop('anon_id', axis=1)
 		test_features = np.array(single_patient_noid)
 		test_feature_norm = (test_features - final_features_mean) / final_features_std 
 		test_colnames = list(single_patient_noid.columns.values)
@@ -248,7 +248,7 @@ def ModelOne(patient):
 			selected_features[i] = test_data_norm[i]
 
 		# extract status of patient (active/inactive)
-		temp = active_all[active_all['patient_id']==patient]
+		temp = active_all[active_all['anon_id']==patient]
 		temp = active_all['isactive_interested']
 		temp2 = np.array(temp)
 		active_status = temp2[0]
@@ -336,7 +336,7 @@ def ModelOne(patient):
 	except IndexError:
 		prediction = 'not calculable'
 		activity = 'is nonexistent'
-		assessment = 'please try a different patient id. Hint: try one greater than 1100!'
+		assessment = 'please try a different patient id. Hint: try one less than 10187!'
 		patient = '-'
 		active_status = '-'
 		avg_rt = '-' 
@@ -352,7 +352,7 @@ def ModelOne(patient):
 	except ValueError:
 		prediction = 'not calculable'
 		activity = 'is nonexistent'
-		assessment = 'please try a different patient id. Hint: try one greater than 1100!'
+		assessment = 'please try a different patient id. Hint: try one less than 10187!'
 		patient = '-'
 		active_status = '-'
 		avg_rt = '-'

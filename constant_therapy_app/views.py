@@ -108,25 +108,9 @@ def features_output():
 
     return render_template("features_output.html", table=table_out, validation=validation, numfeatures=numfeatures) #training=training,
 
-@app.route('/features_output_subscribed')
-def features_output_subscribed():
-    #pull 'birth_month' from input field and store it
-    numfeatures = request.args.get('numfeatures')
-    try: 
-        numfeatures = int(numfeatures)
-    except ValueError:
-        numfeatures = 5
-    validation, table = ModelItSubscribed() # training,
-    table_out = []
-    # for i in range(0, table.shape[0]):
-    for i in range(numfeatures):
-        table_out.append(dict(feature=table.iloc[i]['feature'], importance=table.iloc[i]['importance'], diffactInact=table.iloc[i]['diffactInact']))
-
-    return render_template("features_output_subscribed.html", table=table_out, validation=validation, numfeatures=numfeatures) #training=training,
-
 @app.route('/patient_output')
 def patient_output():
-    #pull 'patient_id' from input field and store it
+    #pull 'anon_id' from input field and store it
     patient = request.args.get('idofpatient')
     # patient = int(patient)
     prediction, activity, assessment, patient, active_status, avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc  = ModelOne(patient) # avg_rt, avg_ratio, first_acc, platform,
@@ -143,16 +127,6 @@ def aboutme():
 @app.route('/contact')
 def contact():
     return render_template("contact.html")
-
-
-# @app.route('/high_risk_output')
-# def high_risk_output():
-#     #pull 'patient_id' from input field and store it
-#     patient = request.args.get('idofpatient')
-#     # patient = int(patient)
-#     prediction, activity, assessment, patient, avg_acc, avg_rt, avg_ratio, first_acc, platform, active_status = ModelOne(patient)
-#     return render_template("high_risk_output.html", prediction=prediction, activity=activity, assessment=assessment, patient=patient, avg_acc=avg_acc, avg_rt=avg_rt, avg_ratio=avg_ratio, first_acc=first_acc, platform=platform, active_status=active_status)
-
 
 
 
