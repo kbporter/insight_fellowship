@@ -120,11 +120,14 @@ def features_output():
 def patient_output():
     #pull 'anon_id' from input field and store it
     patient = request.args.get('idofpatient')
-    
-    if int(patient) < 0:
+    print('patient', patient)
+    try: 
+        if int(patient) < 0:
+            patient = 100
+        elif int(patient) ==0:
+            patient = 100 
+    except ValueError:
         patient = 100
-    elif int(patient) ==0:
-        patient = 100 
 
     # patient = int(patient)
     prediction, activity, assessment, patient, active_status, comparison  = ModelOne(patient) #  avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc,
