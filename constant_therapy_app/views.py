@@ -96,6 +96,7 @@ def figure10():
 def features_output():
 	#pull 'birth_month' from input field and store it
     numfeatures = request.args.get('numfeatures')
+    print(numfeatures)
     try: 
         numfeatures = int(numfeatures)
         if numfeatures == 0:
@@ -106,6 +107,7 @@ def features_output():
             numfeatures = 5    
     except ValueError:
         numfeatures = 5
+    print(numfeatures)
     validation, table = ModelIt() # training,
     table_out = []
     # for i in range(0, table.shape[0]):
