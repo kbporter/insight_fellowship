@@ -98,6 +98,8 @@ def features_output():
     numfeatures = request.args.get('numfeatures')
     try: 
         numfeatures = int(numfeatures)
+        if numfeatures == 0:
+            numfeatures = 5
     except ValueError:
         numfeatures = 5
     validation, table = ModelIt() # training,
@@ -114,12 +116,12 @@ def patient_output():
     patient = request.args.get('idofpatient')
     
     # patient = int(patient)
-    prediction, activity, assessment, patient, active_status, avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc, comparison  = ModelOne(patient) # avg_rt, avg_ratio, first_acc, platform,
+    prediction, activity, assessment, patient, active_status, comparison  = ModelOne(patient) #  avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc,
     table_out = []
     for i in np.arange(comparison.shape[0]):
         table_out.append(dict(feature=comparison.iloc[i]['feature'], dropoff_mean=comparison.iloc[i]['dropoff_mean'], patientval=comparison.iloc[i]['patientval'], activemean=comparison.iloc[i]['active_mean'])) # 
 
-    return render_template("patient_output.html", prediction=prediction, activity=activity, assessment=assessment, patient=patient, active_status=active_status, avg_rt = avg_rt, first_trial_rt = first_trial_rt, avg_acc = avg_acc, level1acc=level1acc, first_acc=first_acc, platform=platform, type37acc=type37acc, sumskipped=sumskipped, level2acc=level2acc, type24acc=type24acc, comptable=table_out) #avg_rt=avg_rt, avg_ratio=avg_ratio, first_acc=first_acc, platform=platform, , script=script, div=div
+    return render_template("patient_output.html", prediction=prediction, activity=activity, assessment=assessment, patient=patient, active_status=active_status, comptable=table_out) #avg_rt = avg_rt, first_trial_rt = first_trial_rt, avg_acc = avg_acc, level1acc=level1acc, first_acc=first_acc, platform=platform, type37acc=type37acc, sumskipped=sumskipped, level2acc=level2acc, type24acc=type24acc, 
 
 @app.route('/slides')
 def slides():

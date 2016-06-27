@@ -108,7 +108,7 @@
       <br>
 
       <table class="table table-hover">
-      <tr><th>Feature</th><th>Importance (%) </th><th align="center">Difference (Mean Active) - (Mean Inactive) 2+ Days</th></tr>
+      <tr><th>Feature</th><th>Importance (%) </th><th align="right"> Average Difference Active - Drop-off </th></tr>
       {% for row in table %}
       <tr><td> {{row['feature']}}</td> <td> <div class="progress"> <div class="progress-bar" role="progressbar" aria-valuenow={{row['importance']}} aria-valuemin="0" aria-valuemax="1" style="width:{{row['importance']}}%" > <span> {{row['importance']}} </span> </div> </div> </td> <td align="center"> {{row['diff2days']}}</td></tr>
       {% endfor %}
@@ -122,23 +122,14 @@
       <br> <br>
       <div class="starter-template">
         <h3>Recommendations:</h3>
-        <p class="lead"> Since that the time taken to respond and the accuracy of the responses are the most influential features in the model, <b> Constant Therapy may want to adjust the difficulty of their starting tasks. </b> Drop-off users perform worse on average than active users, suggesting that the <b> tasks assigned to new users are too difficult, potentially causing frustration with the app.</b> Furthermore, <b> prompting users to slow down after an inaccurate response</b> may facilitate their experience. </b> </p>
+        <p class="lead"> Since the two most important features in predicting user drop-off are both related to the time taken to respond to a question, Constant Therapy may want to <b> investigate potential causes for this effect.</b> It is possible that patients who have a more severe deficit, and take longer to respond, find the app most useful. If this is the case, Constant Therapy should <b> consider targeting that population with their marketing team.</b> </p> 
 
-        <p class="lead"> The level of difficulty and task type also seem to affect the two groups differently. Drop-off users perform worse than active users on Task B, but better on task A. <b> Decreasing the starting difficulty of Task B, and increasing the starting difficulty of Task A is recommended.</b> </p>
-        <p class = "lead"> The first two levels of difficulty also seem to not be optimized. Fewer drop-off users perform well on the least difficult tasks, but those assigned the second level of difficulty perform better than the active users on average. 
+        <p class="lead"> Alternatively, Constant Therapy may want to <b> adjust the difficulty of the tasks for new users.</b> More difficult starting tasks could provide drop-off users who are quick to respond with more of a challenge. </p>
+
+        <p class="lead"> Finally, I would not recommend Constant Therapy take action based on the other features of the model at this time. The small differences and importance of the last 8 features <b> do not warrent large-scale action.</b> </p>  
+
       </div>
-<!--       <table class="table table-hover">
-    <tr>
-          <td><a> <img src="../static/image/first5_avg_acc_activeinactive.png" class="img-rounded" alt="Avg Accuracy" width=100% height=auto</a> </td>
-          <td><a> <img src="../static/image/first_acc_activeinactive.png" class="img-rounded" alt="First Accuracy" width=100% height=auto </a></td>
-        </tr>
-      </table> -->
-      <!-- <br> <br> -->
-      <p class = "lead">Additionally, it seems as though the platform may influence drop-off <b> matching the features across the two platforms </b>  may increase user retention on the less supported platform </p>
-      <!-- <table class="table table-hover">
-          <tr><td><a> <img src="../static/image/platform_active_inactive.png" class="img-rounded" alt="Platform" width=100% height=auto </a></td><td><a> <img src="../static/image/task_ratio_activeinactive.png" class="img-rounded" alt="Task Ratio" width=100% height=auto </a></td></tr>
-      </table>
- -->
+
       <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
       <script src="static/js/bootstrap.min.js"></script>
     </div><!-- /.container -->

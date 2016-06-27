@@ -95,19 +95,21 @@
     <div class="container">
       <div class="starter-template">
 
-        <p class="lead"> The likelihood that this patient is a drop-off case is {{prediction}}% The actual status of this patient {{activity}}. {{assessment}}</p>
+        <p class="lead"> The likelihood that this patient is a drop-off case is {{prediction}}% The actual status of this patient {{activity}}. {{assessment}}.</p>
       </div>
 
 
-      <table class="table table-hover">
+<!--       <table class="table table-hover">
       <tr><th>Patient</th><th>Average Reaction Time</th><th>First Trial Reaction Time</th><th>Average Accuracy</th><th>Difficulty 1 * Accuracy</th><th>First Trial Accuracy</th><th>Platform Used</th><th>Task 37 * Accuracy</th><th>Trials Skipped</th><th>Difficulty 2 * Accuracy</th><th>Task 24 * Accuracy</th><th>Actual Status (0=Inactive)</th></tr>
       <tr><td>{{patient}}</td><td class="p_n"> {{avg_rt}}</td><td class="p_n"> {{first_trial_rt}}</td><td class="p_n"> {{avg_acc}}</td><td class="p_n"> {{level1acc}}</td><td class="p_n"> {{first_acc}}</td> <td class="p_n"> {{platform}}</td><td class="p_n"> {{type37acc}}</td><td class="p_n"> {{sumskipped}}</td><td class="p_n"> {{level2acc}}</td><td class="p_n"> {{type24acc}}</td><td> {{active_status}}</td></tr>
-      </table>  
+      </table>   -->
+      <br> <br>
+      <p class="lead"> This patient is <b> more similar to the drop-off group than the active group</b> on the features below. You may want to create an intervention for this patient using this information.  </p>
 
-      <table> 
-        <tr><th> Feature </th> <th>   </th> <th> Drop-off Mean </th> <th>   </th><th> Patient </th> <th>   </th><th> Active Mean </th> </tr> 
+      <table class="table table-hover"> 
+        <tr><th > Feature </th> <th align="center"> Drop-off Mean </th> <th align="center">Patient</th> <th align="center"> Active Mean</th> </tr> 
         {% for row in comptable %}
-      <tr><td> {{row['feature']}}</td> <td>  </td><td> {{row['dropoff_mean']}} </td> <td>  </td><td align="center"> {{row['patientval']}}</td><td>  </td><td align="center"> {{row['activemean']}}</td></tr>
+      <tr><td> {{row['feature']}}</td> <td> {{row['dropoff_mean']}} </td> <td align="center"> {{row['patientval']}}</td><td align="center"> {{row['activemean']}}</td></tr>
       {% endfor %}
       </table>
 
