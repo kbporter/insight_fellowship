@@ -101,7 +101,9 @@ def features_output():
         if numfeatures == 0:
             numfeatures = 5
         elif numfeatures > 10: 
-            numfeatures = 10    
+            numfeatures = 10
+        elif numfeatures < 0:
+            numfeatures = 5    
     except ValueError:
         numfeatures = 5
     validation, table = ModelIt() # training,
@@ -117,6 +119,11 @@ def patient_output():
     #pull 'anon_id' from input field and store it
     patient = request.args.get('idofpatient')
     
+    if int(patient) < 0:
+        patient = 100
+    elif int(patient) ==0:
+        patient = 100 
+
     # patient = int(patient)
     prediction, activity, assessment, patient, active_status, comparison  = ModelOne(patient) #  avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc,
     table_out = []
