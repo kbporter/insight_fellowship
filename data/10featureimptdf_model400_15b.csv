@@ -1,11 +1,1 @@
-,importance,index,feature
-0,0.3665818957192136,1,mean_reaction_time
-1,0.33863497598077813,4,first_trial_reaction_time
-2,0.06911518218697563,0,mean_accuracy
-5,0.05068649737984942,64,task_level1_x_avg_accuracy
-3,0.04034481027757257,3,first_trial_accuracy
-9,0.031205285925891144,89,task_type24_x_avg_accuracy
-4,0.029338427269617356,120,client_platform
-8,0.02778796239535578,65,task_level2_x_avg_accuracy
-6,0.02560932904669568,2,sum_skipped_trials
-7,0.020695633818050455,121,clinician_ref
+,importance,index,feature0,0.366581896,1,average reaction time1,0.338634976,4,first trial reaction time2,0.069115182,0,average accuracy5,0.050686497,64,task difficulty 1 : accuracy3,0.04034481,3,first trial accuracy9,0.031205286,89,task [A] : accuracy4,0.029338427,120,app platform8,0.027787962,65,task difficulty 2 : accuracy6,0.025609329,2,num. skipped trials7,0.020695634,121,clinician referral
