@@ -111,6 +111,8 @@ def ModelIt():
 	# selected_feature_names = list(final_features_raw.columns.values)
 	selected_feature_names = list(selected_feature_pd['feature'])
 	selected_feature_index = list(selected_feature_pd['index'])
+	selected_feature_pd2 = pd.read_csv('./data/10featureimptdf_model400_15b_readable.csv')
+	selected_feature_read = list(selected_feature_pd2['feature'])
 
 	# import test data and labels 
 	test_data, test_labels, trainval_data, trainval_labels = fns.load_train_test_data()
@@ -149,7 +151,7 @@ def ModelIt():
 	mean_diff = mean_diff_interested
 	# mean_diff_interested = np.array(mean_diff_interested)
 	# mean_diff_interested = list(mean_diff_interested)
-	features_out = pd.DataFrame({'feature': selected_feature_names, 'importance': deployed_model.feature_importances_, 'diff2days': mean_diff})   # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
+	features_out = pd.DataFrame({'feature': selected_feature_read, 'importance': deployed_model.feature_importances_, 'diff2days': mean_diff})   # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
 	features_out['importance'] = features_out['importance'].round(3)*100
 	features_out['diff2days'] = features_out['diff2days'].round(3)
 	# features_out['diff_14_days'] = features_out['diff_14_days'].round(3)
@@ -184,6 +186,8 @@ def ModelOne(patient):
 	# selected_feature_names = list(final_features_raw.columns.values)
 	selected_feature_names = list(selected_feature_pd['feature'])
 	selected_feature_index = list(selected_feature_pd['index'])
+	selected_feature_pd2 = pd.read_csv('./data/10featureimptdf_model400_15b_readable.csv')
+	selected_feature_read = list(selected_feature_pd2['feature'])
 
 	# get normalized feature set 
 	final_features_norm = (final_features_raw - final_features_mean) / final_features_std 
@@ -252,7 +256,7 @@ def ModelOne(patient):
 		        isdrop = 0
 		    return isdrop
 
-		comparison = pd.DataFrame({'feature': selected_feature_names, 'dropoff_mean': selected_dropmean_np.round(3), 'patientval': selected_patient.round(3), 'active_mean': selected_activemean_np.round(3)})
+		comparison = pd.DataFrame({'feature': selected_feature_read, 'dropoff_mean': selected_dropmean_np.round(3), 'patientval': selected_patient.round(3), 'active_mean': selected_activemean_np.round(3)})
 		comparison['dropcloser'] = comparison.apply(patientdiff_groups, 1);
 		compgroup = comparison.groupby(by='dropcloser', axis = 0)
 		painpoints = compgroup.get_group(1)
