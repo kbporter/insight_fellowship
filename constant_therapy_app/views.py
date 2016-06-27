@@ -100,6 +100,8 @@ def features_output():
         numfeatures = int(numfeatures)
         if numfeatures == 0:
             numfeatures = 5
+        elif numfeatures > 10: 
+            numfeatures = 10    
     except ValueError:
         numfeatures = 5
     validation, table = ModelIt() # training,
