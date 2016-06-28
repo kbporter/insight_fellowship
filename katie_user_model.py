@@ -113,6 +113,7 @@ def ModelIt():
 	selected_feature_index = list(selected_feature_pd['index'])
 	selected_feature_pd2 = pd.read_csv('./data/10featureimptdf_model400_15b_readable.csv')
 	selected_feature_read = list(selected_feature_pd2['feature'])
+	selected_feature_unit = list(selected_feature_pd2['units'])
 
 	# import test data and labels 
 	test_data, test_labels, trainval_data, trainval_labels = fns.load_train_test_data()
@@ -151,7 +152,7 @@ def ModelIt():
 	mean_diff = mean_diff_interested
 	# mean_diff_interested = np.array(mean_diff_interested)
 	# mean_diff_interested = list(mean_diff_interested)
-	features_out = pd.DataFrame({'feature': selected_feature_read, 'importance': deployed_model.feature_importances_, 'diff2days': mean_diff})   # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
+	features_out = pd.DataFrame({'feature': selected_feature_read, 'importance': deployed_model.feature_importances_, 'diff2days': mean_diff, 'units': selected_feature_unit})   # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
 	features_out['importance'] = features_out['importance'].round(3)*100
 	features_out['diff2days'] = features_out['diff2days'].round(3)
 	# features_out['diff_14_days'] = features_out['diff_14_days'].round(3)

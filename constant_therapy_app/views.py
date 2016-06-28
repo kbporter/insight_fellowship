@@ -112,7 +112,7 @@ def features_output():
     table_out = []
     # for i in range(0, table.shape[0]):
     for i in range(numfeatures):
-        table_out.append(dict(feature=table.iloc[i]['feature'], importance=table.iloc[i]['importance'], diff2days=table.iloc[i]['diff2days']))
+        table_out.append(dict(feature=table.iloc[i]['feature'], importance=table.iloc[i]['importance'], diff2days=table.iloc[i]['diff2days'], units=table.iloc[i]['units']))
 
     return render_template("features_output.html", table=table_out, validation=validation, numfeatures=numfeatures) #training=training,
 
