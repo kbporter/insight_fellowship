@@ -256,7 +256,7 @@ def ModelOne(patient):
 		        isdrop = 0
 		    return isdrop
 
-		comparison = pd.DataFrame({'feature': selected_feature_read, 'dropoff_mean': selected_dropmean_np.round(3), 'patientval': selected_patient.round(3), 'active_mean': selected_activemean_np.round(3)})
+		comparison = pd.DataFrame({'feature': selected_feature_read, 'dropoff_mean': selected_dropmean_np.round(2), 'patientval': selected_patient.round(2), 'active_mean': selected_activemean_np.round(2)})
 		comparison['dropcloser'] = comparison.apply(patientdiff_groups, 1);
 		compgroup = comparison.groupby(by='dropcloser', axis = 0)
 		painpoints = compgroup.get_group(1)
@@ -270,61 +270,15 @@ def ModelOne(patient):
 		if active_status==1:
 			activity = 'is active'
 		else:
-		    activity = 'is not active'
-
-		# # extract first 5 avg acc
-		# temp = single_patient['mean_reaction_time'][single_patient['mean_reaction_time']>-1]
-		# temp2 = np.array(temp)
-		# avg_rt = temp2[0]
-
-		# # # extract first 5 avg rt
-		# temp = single_patient['first_trial_reaction_time'][single_patient['first_trial_reaction_time']>-1]
-		# temp2 = np.array(temp)
-		# first_trial_rt = temp2[0]
-
-		# # # extract first 5 avg ratio completed
-		# temp = single_patient['mean_accuracy'][single_patient['mean_accuracy']>-1]
-		# temp2 = np.array(temp)
-		# avg_acc = temp2[0]
-
-		# # # extract first acc
-		# temp = single_patient['task_level1_x_avg_accuracy'][single_patient['task_level1_x_avg_accuracy']>-1]
-		# temp2 = np.array(temp)
-		# level1acc = temp2[0]
-
-		# # extract platform
-		# temp = single_patient['first_trial_accuracy'][single_patient['first_trial_accuracy']>-1]
-		# temp2 = np.array(temp)
-		# first_acc = temp2[0]
-
-		# # extract platform
-		# temp = single_patient['client_platform'][single_patient['client_platform']>-1]
-		# temp2 = np.array(temp)
-		# platform= temp2[0]
-
-		# # extract platform
-		# temp = single_patient['task_type37_x_avg_accuracy'][single_patient['task_type37_x_avg_accuracy']>-1]
-		# temp2 = np.array(temp)
-		# type37acc= temp2[0]
-
-		# temp = single_patient['sum_skipped_trials'][single_patient['sum_skipped_trials']>-1]
-		# temp2 = np.array(temp)
-		# sumskipped= temp2[0]
-
-		# temp = single_patient['task_level2_x_avg_accuracy'][single_patient['task_level2_x_avg_accuracy']>-1]
-		# temp2 = np.array(temp)
-		# level2acc= temp2[0]
-		
-		# temp = single_patient['task_type24_x_avg_accuracy'][single_patient['task_type24_x_avg_accuracy']>-1]
-		# temp2 = np.array(temp)
-		# type24acc = temp2[0]	
+		    activity = 'is dropped out'
 
 		testX = selected_patient
 		pred = deployed_model.predict_proba(testX)
 		prediction = pred[0][0]
 		prediction = prediction.round(3)
+		print(activity)
 		# insert recommendation for action here! after the pred 
-		if activity == 'is not active':
+		if activity == 'is dropped out':
 			if prediction > .5: 	
 				assessment = 'The model predicted this user correctly'
 			elif prediction < .5:
@@ -353,17 +307,6 @@ def ModelOne(patient):
 		assessment = 'please try a different patient id. Hint: try one less than 10187!'
 		patient = '-'
 		active_status = '-'
-		# avg_rt = '-' 
-		# first_trial_rt = '-'
-		# avg_acc = '-'
-		# level1acc = '-'
-		# first_acc = '-'
-		# platform = '-'
-		# type37acc = '-'
-		# sumskipped = '-'
-		# level2acc = '-'
-		# type24acc = '-'
-		# comparison=pd.DataFrame()
 		painpoints = pd.DataFrame()
 	except ValueError:
 		prediction = 'not calculable'
@@ -373,5 +316,4 @@ def ModelOne(patient):
 		active_status = '-'
 		painpoints = pd.DataFrame()
 
-	return prediction, activity, assessment, patient, active_status, painpoints #comparison 
-	#avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc,   
+	return prediction, activity, assessment, patient, active_status, painpoints

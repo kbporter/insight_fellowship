@@ -137,6 +137,28 @@ def patient_output():
 
     return render_template("patient_output.html", prediction=prediction, activity=activity, assessment=assessment, patient=patient, active_status=active_status, comptable=table_out) #avg_rt = avg_rt, first_trial_rt = first_trial_rt, avg_acc = avg_acc, level1acc=level1acc, first_acc=first_acc, platform=platform, type37acc=type37acc, sumskipped=sumskipped, level2acc=level2acc, type24acc=type24acc, 
 
+@app.route('/patient_output_present')
+def patient_output_present():
+    #pull 'anon_id' from input field and store it
+    patient = request.args.get('idofpatient')
+    print('patient', patient)
+    try: 
+        if int(patient) < 0:
+            patient = 100
+        elif int(patient) ==0:
+            patient = 100 
+    except ValueError:
+        patient = 100
+
+    # patient = int(patient)
+    prediction, activity, assessment, patient, active_status, comparison  = ModelOne(patient) #  avg_rt, first_trial_rt, avg_acc, level1acc, first_acc, platform, type37acc, sumskipped, level2acc, type24acc,
+    table_out = []
+    for i in np.arange(comparison.shape[0]):
+        table_out.append(dict(feature=comparison.iloc[i]['feature'], dropoff_mean=comparison.iloc[i]['dropoff_mean'], patientval=comparison.iloc[i]['patientval'], activemean=comparison.iloc[i]['active_mean'])) # 
+
+    return render_template("patient_output_present.html", prediction=prediction, activity=activity, assessment=assessment, patient=patient, active_status=active_status, comptable=table_out) #avg_rt = avg_rt, first_trial_rt = first_trial_rt, avg_acc = avg_acc, level1acc=level1acc, first_acc=first_acc, platform=platform, type37acc=type37acc, sumskipped=sumskipped, level2acc=level2acc, type24acc=type24acc, 
+
+
 @app.route('/slides')
 def slides():
     return render_template("slides.html")

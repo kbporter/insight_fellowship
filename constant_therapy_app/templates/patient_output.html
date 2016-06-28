@@ -67,19 +67,9 @@
     </nav>
   <br> <br> <br> 
 
-    <div class="container">
-
-      <div class="starter-template">
-        <h2>Your Results</h2>
-        <!-- <p>Enter some user input</p> -->
-    </div>
     <div class = "container">
-
+      <h3>Your Results</h3>
       <form  action="/input" method="GET">
-      <!--   <div class="form-group">
-          <label for="birth_month">Birth Month:</label>
-          <input type="text" id="birth_month" name='birth_month' placeholder="e.g. ">
-        </div> -->
         <div>
           <button type="submit" class="btn btn-default btn-lg">Return to Start </button>
         </div>
@@ -107,9 +97,9 @@
       <p class="lead"> This patient is <b> more similar to the drop-off group than the active group</b> on the features below. You may want to create an intervention for this patient using this information.  </p>
 
       <table class="table table-hover"> 
-        <tr><th > Feature </th> <th align="center"> Drop-off Mean </th> <th align="center">Patient</th> <th align="center"> Active Mean</th> </tr> 
+        <tr><th > Feature </th> <th  style="text-align:center"> Drop-off Mean </th> <th style="text-align:center">Patient</th> <th style="text-align:center"> Active Mean</th> </tr> 
         {% for row in comptable %}
-      <tr><td> {{row['feature']}}</td> <td> {{row['dropoff_mean']}} </td> <td align="center"> {{row['patientval']}}</td><td align="center"> {{row['activemean']}}</td></tr>
+      <tr><td> {{row['feature']}}</td> <td align="center"> {{row['dropoff_mean']}} </td> <td align="center"> {{row['patientval']}}</td><td align="center"> {{row['activemean']}}</td></tr>
       {% endfor %}
       </table>
 

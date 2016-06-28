@@ -108,7 +108,7 @@
       <br>
 
       <table class="table table-hover">
-      <tr><th>Feature</th><th>Importance (%) </th><th align="right"> Average Difference Active - Drop-off </th></tr>
+      <tr><th>Feature</th><th>Importance (%) </th><th  style="text-align:center" > Average Difference Active - Drop-off </th></tr>
       {% for row in table %}
       <tr><td> {{row['feature']}}</td> <td> <div class="progress"> <div class="progress-bar" role="progressbar" aria-valuenow={{row['importance']}} aria-valuemin="0" aria-valuemax="1" style="width:{{row['importance']}}%" > <span> {{row['importance']}} </span> </div> </div> </td> <td align="center"> {{row['diff2days']}}</td></tr>
       {% endfor %}
