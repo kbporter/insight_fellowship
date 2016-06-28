@@ -150,6 +150,10 @@ def ModelIt():
 	temp = final_features_raw_wid.merge(active_all, on='anon_id')
 	mean_diff_interested, mean_diff_engaged, mean_diff_subscribed = fns.get_avg_diff(temp, selected_feature_names)
 	mean_diff = mean_diff_interested
+	accuracy_ind = [2, 3, 4, 5, 7]
+	for i in accuracy_ind:
+		mean_diff[i] = mean_diff[i]*100
+
 	# mean_diff_interested = np.array(mean_diff_interested)
 	# mean_diff_interested = list(mean_diff_interested)
 	features_out = pd.DataFrame({'feature': selected_feature_read, 'importance': deployed_model.feature_importances_, 'diff2days': mean_diff, 'units': selected_feature_unit})   # 'diff_14_days': mean_diff_engaged, 'diff_30_days': mean_diff_subscribed}
